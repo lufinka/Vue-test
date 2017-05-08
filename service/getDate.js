@@ -1,5 +1,9 @@
+import {
+    getLocalStorage
+} from '../service/tool.js';
+var token = getLocalStorage('token')
 const headers = {
-    token: '',
+    token: token,
     app_version: '0.0.1',
     os: 'h5',
     station: '000000',

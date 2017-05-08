@@ -7,6 +7,8 @@ import b from '@/components/b'
 import c from '@/components/c'
 import index from '@/pages/index'
 import register from '@/pages/register'
+import home from '@/pages/home'
+import slide from '@/components/slide'
 
 Vue.use(Router)
 
@@ -18,6 +20,15 @@ export default new Router({
             path: '',
             name: 'login',
             component: login
+            }, {
+            path: '/home',
+            name: 'home',
+            component: home,
+            children: [{
+                path: '/slide',
+                name: 'slide',
+                component: slide
+            }]
             }, {
             path: '/index',
             name: 'index',

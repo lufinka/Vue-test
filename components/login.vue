@@ -80,6 +80,8 @@
                             setLocalStorage('result', data.result);
                             setLocalStorage('username', data.userName);
                             setLocalStorage('avatarUrl', data.avatarUrl);
+                            setLocalStorage('enterpriseName', data.enterpriseName);
+                            setLocalStorage('nameList', data.nameList);
                             Toast({
                                 message: '登录成功',
                                 position: 'bottom',
@@ -114,7 +116,6 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less">
-    @import "../style/common.less";
     @import "//unpkg.com/mint-ui/lib/style.css";
     @public_size : 37.5rem;
     @body_bgcolor: #f7f7f7;
