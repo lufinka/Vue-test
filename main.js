@@ -6,11 +6,13 @@ import router from './router'
 import store from './store/'
 import resource from 'vue-resource'
 import Mint from 'mint-ui';
+import { Lazyload } from 'mint-ui';
 import './service/rem'
 
 
 Vue.use(Mint);
 Vue.use(resource);
+Vue.use(Lazyload);
 Vue.config.productionTip = false
 
 

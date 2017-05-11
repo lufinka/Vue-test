@@ -33,7 +33,7 @@
 </template>
 
 <script>
-    import router from '../router'
+    import router from '@/router'
     import header from '@/components/header';
     import {
         Toast
@@ -206,14 +206,20 @@
 </script>
 
 <style lang="less">
-    @import "../style/common.less";
-    @import "//unpkg.com/mint-ui/lib/style.css";
-    @public_size : 37.5rem;
+    @size : 37.5rem;
     @body_bgcolor: #f7f7f7;
-    .font-size(@size) {
-        font-size: @size/@public_size;
+    .font-size(@s) {
+        font-size: @s/@size;
     }
-    
+    .height(@s) {
+        height: @s/@size;
+    }
+    .line-height(@s) {
+        line-height: @s/@size;
+    }
+    .width(@s) {
+        width: @s/@size;
+    }
     body {
         background-color: #fff;
     }
@@ -225,36 +231,36 @@
     }
     
     .cont {
-        padding: 0 15/@public_size;
+        padding: 0 15/@size;
     }
     
     .from {
         border-bottom: 1px solid rgba(0, 0, 0, .1);
         .font-size(14);
-        padding-top: 10/@public_size;
+        padding-top: 10/@size;
         color: #b2b2b2;
         position: relative;
         input {
             border: none;
             width: 100%;
-            text-indent: 10/@public_size;
+            text-indent: 10/@size;
             .height(50);
         }
         button {
-            .gradient(-180deg, #FF5B3B, #FE403B);
+            background-image: linear-gradient(-180deg, #FF5B3B, #FE403B);
             background-color: transparent;
             border: none;
-            .radius(4/@public_size);
+            border-radius: 4/@size;
             .font-size(12);
             .width(78);
             .height(28);
             color: #fff;
             position: absolute;
             top: 50%;
-            margin-top: -14/@public_size;
-            right: 10/@public_size;
+            margin-top: -14/@size;
+            right: 10/@size;
             &.disable {
-                .gradient(-180deg, #eee, #eee);
+                background-image: linear-gradient(-180deg, #eee, #eee);
                 color: #b2b2b2;
             }
         }
@@ -262,66 +268,66 @@
             position: absolute;
             .width(80);
             .height(32);
-            right: 10/@public_size;
+            right: 10/@size;
             top: 50%;
-            margin-top: -16/@public_size;
+            margin-top: -16/@size;
         }
     }
     
     .button-bar {
         width: 100%;
-        padding: 0 20/@public_size 20/@public_size;
+        padding: 0 20/@size 20/@size;
         button {
             width: 100%;
             background: #eee;
             box-shadow: 0px 3px 10px 0px rgba(254, 64, 59, 0.50);
             -webkit-box-shadow: 0px 3px 10px 0px rgba(254, 64, 59, 0.50);
-            .radius(100px);
+            border-radius: 100px;
             .font-size(15);
             .height(45);
             .line-height(45);
-            .gradient(-180deg, #FF5B3B, #FE403B);
+            background-image: linear-gradient(-180deg, #FF5B3B, #FE403B);
             color: #fff;
             &.disable {
                 box-shadow: 0px 3px 10px 0px rgba(238, 238, 238, 0.50);
                 -webkit-box-shadow: 0px 3px 10px 0px rgba(238, 238, 238, 0.50);
                 color: #b2b2b2;
-                .gradient(-180deg, #eee, #eee);
+                background-image: linear-gradient(-180deg, #eee, #eee);
             }
         }
         a {
             display: block;
-            margin-top: 15/@public_size;
+            margin-top: 15/@size;
             text-align: center;
             width: 100%;
             background: #eee;
             box-shadow: 0px 3px 10px 0px rgba(254, 64, 59, 0.50);
             -webkit-box-shadow: 0px 3px 10px 0px rgba(254, 64, 59, 0.50);
-            .radius(100px);
+            border-radius: 100px;
             .font-size(15);
             .height(45);
             .line-height(45);
-            .gradient(-180deg, #FF5B3B, #FE403B);
+            background-image: linear-gradient(-180deg, #FF5B3B, #FE403B);
             p {
                 display: inline-block;
                 color: #fff;
-                padding-left: 22/@public_size;
-                background-image: url(../images/purchas/button-phone.png);
+                padding-left: 22/@size;
+                background-image: url(../../images/purchas/button-phone.png);
                 background-repeat: no-repeat;
                 background-position: left center;
-                background-size: 18/@public_size auto;
+                background-size: 18/@size auto;
             }
         }
     }
     
     .agreement {
-        padding: 10/@public_size 0;
+        padding: 10/@size 0;
         label {
             display: block;
             text-align: left;
-            padding-left: 20/@public_size;
+            padding-left: 20/@size;
             .line-height(20);
-            margin: 10/@public_size 20/@public_size;
+            margin: 10/@size 20/@size;
             .font-size(13);
             position: relative;
             color: #666;
@@ -332,14 +338,14 @@
                 position: absolute;
                 top: 50%;
                 left: 0;
-                background-image: url(../images/purchas/checkbox-off.png);
-                background-size: 16/@public_size auto;
-                margin-top: -8/@public_size;
+                background-image: url(../../images/purchas/checkbox-off.png);
+                background-size: 16/@size auto;
+                margin-top: -8/@size;
             }
             input:checked:after {
                 content: "";
-                background-image: url(../images/purchas/checkbox-on.png);
-                background-size: 16/@public_size auto;
+                background-image: url(../../images/purchas/checkbox-on.png);
+                background-size: 16/@size auto;
             }
             a {
                 color: #FE403B;

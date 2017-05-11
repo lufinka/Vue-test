@@ -17,10 +17,10 @@
     }
 </script>
 
-<style>
-    @import 'https://necolas.github.io/normalize.css/6.0.0/normalize.css';
+<style lang="less">
+    @import "style/common.less";
+    @import "//unpkg.com/mint-ui/lib/style.css";
     body {
-        margin: 0;
         font-size: 0.4rem;
     }
     
@@ -47,5 +47,16 @@
     .router-fade-enter,
     .router-fade-leave-active {
         opacity: 0;
+    }
+    
+    .mint-msgbox-btn.mint-msgbox-confirm{
+        color: #FE403B!important;
+    }
+    
+    img[lazy=loading] {
+        width: 40% !important;
+        display: block;
+        height: 100%;
+        margin: 0 auto;
     }
 </style>

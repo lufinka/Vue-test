@@ -1,64 +1,58 @@
 <template>
     <div class="product-wrapper">
-       <a href="#">
-        <div class="product-photo"><img v-lazy="special.productPicUrl" alt=""></div>
+    <a :href="'/product.html?productId='+special.productId+'&enterpriseId='+special.productSupplyId">
+        <div class="product-photo"><img v-lazy="special.imgPath" alt=""></div>
         <div class="product-text">
-            <h2>{{special.productName}}&nbsp;{{special.spec}}</h2>
+            <h2>{{special.productSupplyName}}&nbsp;{{special.productSpec}}</h2>
             <h3><img src="../images/home/factory.png" alt="">{{special.factoryName}}</h3>
             <h4 v-if="special.statusDesc == 0">
-                <div v-if="special.productPromotion && special.productPromotion.promotionId != 0"  class="price">
-                                <p class="product_price"><span>采购价</span>&yen;<em>{{special.productPromotion.promotionPrice | priceInt}}</em>{{special.productPromotion.promotionPrice | priceFloat}}</p>
-                                <p class="old_price">&yen;{{special.productPrice | price}}</p>
-                             </div>
-                           <div  v-else class="price">
-                                <p class="product_price"><span>采购价</span>&yen;<em>{{special.productPrice | priceInt}}</em>{{special.productPrice | priceFloat}}</p>
-                                </div>
-                        <button @click.stop.prevent="addShopCar" class="btn btn_add_list">
+                <div class="price">
+                    <p class="product_price"><span>采购价</span>&yen;<em>{{special.productPrice | priceInt}}</em>{{special.productPrice | priceFloat}}</p>
+                    <p class="old_price" v-if="special.specialPrice">&yen;{{special.specialPrice | price}}</p>
+                </div>
+                <button @click.stop.prevent="addShopCar" class="btn btn_add_list">
                             去抢购</button>
-                             </h4>
-                        <h4 v-else-if="special.statusDesc == -1">
-                        <div class="price">
-                        </div>
-                        <a href="login.html" class="btn btn_login">登录</a>
-                        </h4>
-                        <h4 v-else-if="special.statusDesc == -2">
-                        <div class="price">
-                        </div>
-                        <button class="btn_warning btn" @click.stop.prevent="addChannel" >加入渠道</button>
-                        </h4>
-                        <h4 v-else-if="special.statusDesc == -3">
-                        <div class="price">
-                        </div>
-                        <button class=" btn_warning btn" @click.stop.prevent>资质未认证</button>
-                        </h4>
-                        <h4 v-else-if="special.statusDesc == -4">
-                        <div class="price">
-                        </div>
-                        <button class="btn btn_warning" @click.stop.prevent>渠道待审核</button>
-                        </h4>
-                        <h4 v-else-if="special.statusDesc == -5">
-                            <div v-if="special.productPromotion && special.productPromotion.promotionId != 0"  class="price">
-                                <p class="product_price"><span>采购价</span>&yen;<em>{{special.productPromotion.promotionPrice | priceInt}}</em>{{special.productPromotion.promotionPrice | priceFloat}}</p>
-                                <p class="old_price">&yen;{{special.productPrice | price}}</p>
-                             </div>
-                           <div  v-else class="price">
-                                <p class="product_price"><span>采购价</span>&yen;<em>{{special.productPrice | priceInt}}</em>{{special.productPrice | priceFloat}}</p>
-                                </div>
-                        <button class="btn_add_list btn" @click.stop.prevent="notice">到货通知</button>
-                        </h4>
-                        <h4 v-else-if="special.statusDesc == -6">
-                        <div class="price">
-                        </div>
-                        <button class="btn_warning btn" @click.stop.prevent>不可购买</button>
-                        </h4>
-                        <h4 v-else-if="special.statusDesc == -7">
-                        <div class="price">
-                        </div>
-                        <button class="btn_warning btn" @click.stop.prevent>已下架</button>
+            </h4>
+            <h4 v-else-if="special.statusDesc == -1">
+                <div class="price">
+                </div>
+                <a href="login.html" class="btn btn_login">登录</a>
+            </h4>
+            <h4 v-else-if="special.statusDesc == -2">
+                <div class="price">
+                </div>
+                <button class="btn_warning btn" @click.stop.prevent="addChannel">加入渠道</button>
+            </h4>
+            <h4 v-else-if="special.statusDesc == -3">
+                <div class="price">
+                </div>
+                <button class=" btn_warning btn" @click.stop.prevent>资质未认证</button>
+            </h4>
+            <h4 v-else-if="special.statusDesc == -4">
+                <div class="price">
+                </div>
+                <button class="btn btn_warning" @click.stop.prevent>渠道待审核</button>
+            </h4>
+            <h4 v-else-if="special.statusDesc == -5">
+                <div class="price">
+                    <p class="product_price"><span>采购价</span>&yen;<em>{{special.productPrice | priceInt}}</em>{{special.productPrice | priceFloat}}</p>
+                    <p class="old_price" v-if="special.specialPrice">&yen;{{special.specialPrice | price}}</p>
+                </div>
+                <button class="btn_add_list btn" @click.stop.prevent="notice">到货通知</button>
+            </h4>
+            <h4 v-else-if="special.statusDesc == -6">
+                <div class="price">
+                </div>
+                <button class="btn_warning btn" @click.stop.prevent>无采购权限</button>
+            </h4>
+            <h4 v-else-if="special.statusDesc == -7">
+                <div class="price">
+                </div>
+                <button class="btn_warning btn" @click.stop.prevent>已下架</button>
             </h4>
         </div>
-        </a>
-    </div>
+    </a>
+</div>
 </template>
 
 <script>
@@ -67,7 +61,8 @@
         MessageBox
     } from 'mint-ui';
     import {
-        headers
+        headers,
+        applyChannelapi
     } from '@/service/getDate.js';
     export default {
         props: {
@@ -84,13 +79,18 @@
                 this.$parent.shopCar(this.special);
             },
             addChannel: function() {
+                var data = JSON.stringify({
+                    spuCode: this.special.productCode,
+                    sellerCode: this.special.productSupplyId
+                });
                 MessageBox.confirm('确定加入渠道?').then(action => {
-                    this.$http.post('mall/api/applyChannelapi', {
-                        spuCode: this.special.spuCode,
-                        sellerCode: this.special.vendorId
-                    }, {
-                        headers: headers
+                    applyChannelapi(this, {
+                        spuCode: this.special.productCode,
+                        sellerCode: this.special.productSupplyId
                     }).then(action => {
+                        if (action.body.statusCode == 0) {
+                            this.special.statusDesc = '-4';
+                        }
                         Toast({
                             message: action.body.message,
                             position: 'bottom',
@@ -144,7 +144,7 @@
                 while (s.length <= rs + 2) {
                     s += '0';
                 }
-                var sFloat = s.substring(1);
+                var sFloat = s.substring(s.indexOf('.'));
                 return sFloat;
             }
         }
@@ -170,7 +170,7 @@
             height: 70/@size;
             margin-right: 10/@size;
             position: absolute;
-            background-color: #ddd;
+            background-color: #f7f7f7;
             left: 10/@size;
             top: 10/@size;
             ;
@@ -266,10 +266,4 @@
         }
     }
     
-    img[lazy=loading] {
-        width: 40% !important;
-        display: block;
-        height: 100%;
-        margin: 0 auto;
-    }
 </style>

@@ -1,8 +1,8 @@
 <template>
    <div>
     <div class="slide-wrapper">
-        <mt-swipe :auto="4000">
-          <mt-swipe-item v-for="item in slideData"><a :href="item.url"><img :src="item.img_path" alt=""></a></mt-swipe-item>
+        <mt-swipe :auto="4000" continuous>
+          <mt-swipe-item v-for="(item, index) in slideData" :key="index"><a :href="item.url"><img :alt="item.name"  v-lazy="item.imgPath" ></a></mt-swipe-item>
         </mt-swipe>
     </div>
     </div> 
@@ -24,13 +24,29 @@
     }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
     @public_size : 37.5rem;
     .slide-wrapper {
         width: 100%;
+        background-color: #ddd;
         height: 180/@public_size;
     }
-    .mint-swipe{
+    .mint-swipe {
         background: none;
+        height: 180/@public_size;
+        a {
+            display: block;
+            height: 100%;
+            img {
+                height: 100%;
+                width: 100%;
+            }
+        }
+    }
+    img[lazy=loading] {
+        width: 10% !important;
+        display: block;
+        height: 100%;
+        margin: 0 auto;
     }
 </style>

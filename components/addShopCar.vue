@@ -7,17 +7,17 @@
        <div class="notice_box2" v-show="ishow" >
        <div>
         <p>
-            <i :class="{btn_reduce_number:true,left:true,btn_reduce_number_ok:count>=target.stepCount*2}" @click="count>=target.stepCount*2?count-=target.stepCount:0"></i>
+            <i :class="{btn_reduce_number:true,left:true,btn_reduce_number_ok:count>=target.inimumPacking*2}" @click="count>=target.inimumPacking*2?count-=target.inimumPacking:0"></i>
             <input type="number" v-model="count" name="number" class="product_number"  />
             <i class="btn_add_number btn_add_number_ok right" @click="add"></i>
         </p>
         <p class="product_buy_info">
             <span class="left">库存</span>
-            <span class="right js_stock">{{target.stockCount}}</span>
+            <span class="right js_stock">{{target.inventory}}</span>
         </p>
         <p class="product_buy_info">
             <span class="left">最小可拆零包装</span>
-            <span class="right js_min">{{target.unit}}</span>
+            <span class="right js_min">{{target.productSpec}}</span>
         </p>
         <p class="error_msg"></p>
         <a href="javascript:" @click.stop.prevent="addShopCarList" class="btn_next_ok js_add_list">加入进货单</a>
@@ -49,17 +49,17 @@
         watch: {
             count: function(newValue, oldValue) {
                 this.count = parseInt(this.count);
-                if (newValue > this.target.stockCount) {
-                    this.count = this.target.stockCount;
-                } else if (newValue < this.target.stepCount) {
-                    this.count = this.target.stepCount;
+                if (newValue > this.target.inventory) {
+                    this.count = this.target.inventory;
+                } else if (newValue < this.target.inimumPacking) {
+                    this.count = this.target.inimumPacking;
                 } else if (newValue == '') {
                     this.count = 0;
                     this.ishow = !0;
                 }
             },
             target: function(newValue, oldValue) {
-                this.count = this.target.stepCount;
+                this.count = this.target.inimumPacking;
             }
         },
         methods: {
@@ -69,21 +69,21 @@
             },
             add: function() {
                 this.count = parseInt(this.count);
-                this.count += this.target.stepCount;
+                this.count += this.target.inimumPacking;
             },
             addShopCarList: function() {
                 this.$http.post('/order/api/cart/addShopCart', {
                     "productCodeCompany": this.target.productCodeCompany,
-                    "spuCode": this.target.spuCode,
+                    "spuCode": this.target.productCode,
                     "productId": this.target.productId,
                     "productCount": this.count,
                     "productPrice": this.target.productPrice,
-                    "supplyId": this.target.vendorId,
-                    "productName": this.target.productName,
-                    "promotionId": this.target.mPromotionId,
-                    "promotionCollectionId": this.target.mPromotionCollectionId,
+                    "supplyId": this.target.productSupplyId,
+                    "productName": this.target.productSupplyName,
+                    "promotionId": this.target.promotionId,
+                    "promotionCollectionId": this.target.promotionCollectionId,
                     "manufactures": this.target.factoryName,
-                    "specification": this.target.spec
+                    "specification": this.target.productSpec
                 }, {
                     headers: headers
                 }).then(action => {

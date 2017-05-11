@@ -40,7 +40,7 @@
     }
 </script>
 
-<style>
+<style scoped>
     li {
         flex: 1;
     }
