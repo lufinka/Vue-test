@@ -66,6 +66,7 @@
            </ul>
        </div>
    </div>
+   <add-shop-car :target="addCartarget" ref="addscar"></add-shop-car>
     </div>
 </template>
 
@@ -73,6 +74,7 @@
     import {
         Toast,
         TabContainer,
+        Indicator,
         TabContainerItem
     } from 'mint-ui';
     import {
@@ -85,6 +87,7 @@
     import company from '@/components/company';
     import bussine from '@/components/bussine';
     import goods from '@/components/goods';
+    import addShopCar from '@/components/addShopCar';
     export default {
         data() {
             return {
@@ -93,6 +96,7 @@
                 active: 'tab-container1',
                 special: [], //首页特价
                 add: [], //广告图数据
+                addCartarget: {}, //加入购物车对象
                 shopList: [], //推荐商业
                 goodList: [], //品类列表
             }
@@ -106,6 +110,7 @@
         components: {
             homeProduct,
             company,
+            addShopCar,
             bussine,
             goods
         },
@@ -114,13 +119,17 @@
                 this.$parent.noticeEvent(arg);
             },
             shopCar(arg) {
-                this.$parent.shopCar(arg);
+                this.addCartarget = arg;
+                this.$refs.addscar.ishow = !0;
             },
             firstScreen() {
+                Indicator.open();
                 listIndexFloorNew(this).then((response) => {
+                    Indicator.close();
                     this.menu = response.body.data.fastList;
                     this.special = response.body.data.floorProduct[0];
                 }, (error) => {
+                    Indicator.close();
                     Toast({
                         message: error,
                         position: 'bottom',

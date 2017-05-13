@@ -1,17 +1,26 @@
 <template>
     <div class="product-wrapper">
-    <a :href="'/product.html?productId='+special.productId+'&enterpriseId='+special.productSupplyId">
-        <div class="product-photo"><img v-lazy="special.imgPath" alt=""></div>
+    <div class="promotion-title" v-show="special.statusDesc !== -1">
+        <div class="promotion-info"><i>抢</i>
+            <p>{{countDown}}</p>
+        </div>
+        <div class="saleNumber">销量：{{special.productDrug.sales_total | saleCount}}{{special.productDrug.unit_cn}}</div>
+    </div>
+    <a :href="'/product.html?productId='+special.productId+'&enterpriseId='+special.productDrug.seller_code">
+        <div class="product-photo"><img v-lazy="special.productDrug.pic_path" alt=""></div>
         <div class="product-text">
-            <h2>{{special.productSupplyName}}&nbsp;{{special.productSpec}}</h2>
-            <h3><img src="../images/home/factory.png" alt="">{{special.factoryName}}</h3>
+            <h2>{{special.productDrug.short_name}}&nbsp;{{special.productDrug.spec}}</h2>
+            <h3><img src="../images/home/factory.png" alt="">{{special.productDrug.factory_name_cn}}</h3>
             <h4 v-if="special.statusDesc == 0">
-                <div class="price">
-                    <p class="product_price"><span>采购价</span>&yen;<em>{{special.productPrice | priceInt}}</em>{{special.productPrice | priceFloat}}</p>
-                    <p class="old_price" v-if="special.specialPrice">&yen;{{special.specialPrice | price}}</p>
+                <div v-if="special.productDrug.productPromotion && special.productDrug.productPromotion.promotion_id != 0" class="price">
+                    <p class="product_price"><span>采购价</span>&yen;<em>{{special.productDrug.productPromotion.promotion_price | priceInt}}</em>{{special.productDrug.productPromotion.promotion_price | priceFloat}}</p>
+                    <p class="old_price">&yen;{{special.productDrug.showPrice | price}}</p>
                 </div>
-                <button @click.stop.prevent="addShopCar" class="btn btn_add_list">
-                            去抢购</button>
+                <div v-else class="price">
+                    <p class="product_price"><span>采购价</span>&yen;<em>{{special.productDrug.showPrice | priceInt}}</em>{{special.productDrug.showPrice | priceFloat}}</p>
+                </div>
+
+                <button @click.stop.prevent="addShopCar" class="btn btn_add_list">去抢购</button>
             </h4>
             <h4 v-else-if="special.statusDesc == -1">
                 <div class="price">
@@ -34,9 +43,12 @@
                 <button class="btn btn_warning" @click.stop.prevent>渠道待审核</button>
             </h4>
             <h4 v-else-if="special.statusDesc == -5">
-                <div class="price">
+                <div v-if="special.productDrug.productPromotion && special.productDrug.productPromotion.promotionId != 0" class="price">
+                    <p class="product_price"><span>采购价</span>&yen;<em>{{special.productDrug.productPromotion.promotionPrice | priceInt}}</em>{{special.productDrug.productPromotion.promotionPrice | priceFloat}}</p>
+                    <p class="old_price">&yen;{{special.productDrug.productPrice | price}}</p>
+                </div>
+                <div v-else class="price">
                     <p class="product_price"><span>采购价</span>&yen;<em>{{special.productPrice | priceInt}}</em>{{special.productPrice | priceFloat}}</p>
-                    <p class="old_price" v-if="special.specialPrice">&yen;{{special.specialPrice | price}}</p>
                 </div>
                 <button class="btn_add_list btn" @click.stop.prevent="notice">到货通知</button>
             </h4>
@@ -73,25 +85,59 @@
         props: {
             special: {
                 type: Object
+            },sysTime: {
+                type: Number
+            }
+        },
+        computed:{
+            countDown() {
+                if (this.special.productDrug.productPromotion && this.special.productDrug.productPromotion.end_time) {
+                    var diff = this.special.productDrug.productPromotion.end_time * 1000 - this.sysTime;
+                    var options = diff / 1000;
+                    var day = Math.floor(options / (60 * 60 * 24));
+                    var hour = Math.floor(options / (60 * 60)) % 24;
+                    var minite = Math.floor(options / 60) % 60;
+                    var second = Math.floor(options) % 60;
+                    if (Math.floor(parseInt(diff / 1000) / (60 * 60 * 24)) != 0) {
+                        this.special.whole = !1;
+                        return "还剩" + day + "天" + hour + "小时" + minite + "分" + second + "秒";
+                    } else {
+                        this.special.whole = !1;
+                        return "还剩" + day + "天" + hour + "小时" + minite + "分";
+                    }
+                }
             }
         },
         components: {},
         methods: {
+            countFn() {
+                if (this.special.productDrug.productPromotion && this.special.productDrug.productPromotion.end_time) {
+                    var diff = this.special.productDrug.productPromotion.end_time * 1000 - this.sysTime;
+                    var options = diff / 1000;
+                    var day = Math.floor(options / (60 * 60 * 24));
+                    var hour = Math.floor(options / (60 * 60)) % 24;
+                    var minite = Math.floor(options / 60) % 60;
+                    var second = Math.floor(options) % 60;
+                    if (Math.floor(parseInt(diff / 1000) / (60 * 60 * 24)) != 0) {
+                        this.special.whole = !1;
+                        return "还剩" + day + "天" + hour + "小时" + minite + "分" + second + "秒";
+                    } else {
+                        this.special.whole = !1;
+                        return "还剩" + day + "天" + hour + "小时" + minite + "分";
+                    }
+                }
+            },
             notice: function() {
-                this.$parent.noticeEvent(this.special);
+                this.$parent.$parent.$parent.noticeEvent(this.special);
             },
             addShopCar: function() {
-                this.$parent.shopCar(this.special);
+                this.$parent.$parent.$parent.shopCar(this.special);
             },
             addChannel: function() {
-                var data = JSON.stringify({
-                    spuCode: this.special.productCode,
-                    sellerCode: this.special.productSupplyId
-                });
                 MessageBox.confirm('确定加入渠道?').then(action => {
                     applyChannelapi(this, {
-                        spuCode: this.special.productCode,
-                        sellerCode: this.special.productSupplyId
+                        spuCode: this.special.spu_code,
+                        sellerCode: this.special.seller_code
                     }).then(action => {
                         if (action.body.statusCode == 0) {
                             this.special.statusDesc = '-4';
@@ -113,7 +159,13 @@
             }
         },
         filters: {
-            price: function(x) {
+            saleCount(x) {
+                if (x / 1000 >= 1) {
+                    return parseInt(x / 100) / 100 + '万'
+                }
+                return x;
+            },
+            price(x) {
                 var f = parseFloat(x);
                 if (isNaN(f)) {
                     return false;
@@ -131,10 +183,10 @@
                 return s;
 
             },
-            priceInt: function(x) {
+            priceInt(x) {
                 return parseInt(x);
             },
-            priceFloat: function(x) {
+            priceFloat(x) {
                 var f = parseFloat(x);
                 if (isNaN(f)) {
                     return false;
@@ -160,6 +212,43 @@
     @size : 37.5rem;
     .product {
         &-wrapper {
+            .promotion-title {
+                height: 30/@size;
+                background-color: #FFF9F9;
+                line-height: 30/@size;
+                width: 100%;
+                padding: 0 10/@size;
+                border: 1px solid #FFE6E6;
+                border-width: 1px 0;
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+                font-size: 12/@size;
+                color: #FE403B;
+                .promotion-info {
+                    align-items: center;
+                    display: flex;
+                    flex: 1;
+                    i {
+                        background-image: linear-gradient(-180deg, #F84A73 0%, #FF3C4C 100%);
+                        border-radius: 50%;
+                        width: 18/@size;
+                        height: 18/@size;
+                        color: #fff;
+                        text-align: center;
+                        line-height: 18/@size;
+                        margin-right: 4/@size;
+                    }
+                    p {
+                        width: 100%;
+                        display: flex;
+                        flex: 1;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    }
+                }
+            }
             a {
                 padding: 10/@size;
                 display: block;
@@ -270,5 +359,4 @@
             }
         }
     }
-    
 </style>

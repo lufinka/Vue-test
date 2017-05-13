@@ -8,9 +8,11 @@ import resource from 'vue-resource'
 import Mint from 'mint-ui';
 import { Lazyload } from 'mint-ui';
 import './service/rem'
+import { InfiniteScroll } from 'mint-ui';
 
 
 Vue.use(Mint);
+Vue.use(InfiniteScroll);
 Vue.use(resource);
 Vue.use(Lazyload);
 Vue.config.productionTip = false

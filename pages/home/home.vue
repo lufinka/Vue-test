@@ -1,11 +1,14 @@
 <template>
   <div class="app">
+  <div class="topbar">
+  <city :target="province"></city>
+  <search></search>
+  </div>
    <slides :slideData="slideData"></slides>
    <transition name="router-fade" mode="out-in">
     		<router-view></router-view>
     	</transition>
    <notice :target="target"></notice>
-   <add-shop-car :target="addCartarget" ref="addscar"></add-shop-car>
    </div>
 </template>
 
@@ -17,39 +20,50 @@
     } from 'mint-ui';
     import {
         headers,
+        mainH5Province,
         listIndexFloorNew
     } from '@/service/getDate';
     headers.station = '000000';
     import slides from '@/components/slide';
     import notice from '@/components/notice';
-    import addShopCar from '@/components/addShopCar';
+    import city from '@/components/city';
+    import search from '@/components/search';
     export default {
         data() {
             return {
                 slideData: [], //焦点图数据
-                addCartarget: {}, //加入购物车对象
                 target: [], //到货通知
+                province:[] //城市列表数据
             }
         },
         created() {
             this.getSlideData();
+            this.getProvince();
         },
         components: {
             slides,
             notice,
-            addShopCar
+            city,
+            search
         },
         methods: {
             noticeEvent(arg) {
                 this.target.push(arg);
             },
-            shopCar(arg) {
-                this.addCartarget = arg;
-                this.$refs.addscar.ishow = !0;
-            },
             getSlideData() {
                 listIndexFloorNew(this).then((response) => {
                     this.slideData = response.body.data.bannerList;
+                }, (error) => {
+                    Toast({
+                        message: error,
+                        position: 'bottom',
+                        duration: 2000
+                    });
+                });
+            },
+            getProvince(){
+                mainH5Province(this).then((response) => {
+                    this.province = response.body.data;
                 }, (error) => {
                     Toast({
                         message: error,
@@ -68,7 +82,15 @@
     * {
         box-sizing: border-box;
     }
-    
+    .topbar{
+        position: fixed;
+        display: flex;
+        top: 9/@size;
+        height: 32/@size;
+        left: 0;
+        right: 0;
+        z-index: 7;
+    }
     body {
         background-color: @body_bgcolor;
     }

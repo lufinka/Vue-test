@@ -33,9 +33,12 @@ var userLogin = function (h, p, o) {
 var ycaptcha = (h, p) => fetch('jsonp', h, 'http://web-ycaptcha.111.com.cn/checkfrontjsonp?jsoncallback=jsonp1?', p);
 var listIndexFloor = (h, p) => fetch(!0, h, '/manage/api/mobileIndex/listIndexFloor', p); //首页数据
 var listIndexFloorNew = (h) => fetch(!0, h, '/manage/api/mobileIndex/listIndexFloorNew'); //首页3=>1数据
-var applyChannelapi = (h, p,o) => fetch(!0, h, '/mall/api/applyChannelapi', p,o); // 加入渠道
+var applyChannelapi = (h, p, o) => fetch(!0, h, '/mall/api/applyChannelapi', p, o); // 加入渠道
+var mainH5Province = (h) => fetch(!0, h, '/manage/api/mainH5Province'); // 城市列表
 var listRecommendShop = (h, p) => fetch(!1, h, '/mall/api/shop/listRecommendShop', p); //首页推荐商业
 var listRecommendIndexFloor = (h, p) => fetch(!1, h, '/manage/api/mobileIndex/listRecommendIndexFloor', p); //首页品类列表
+var isCommonOrPilotSite = (h, p) => fetch(!1, h, '/manage/api/mobileIndex/isCommonOrPilotSite', p); //是否试点、通用
+var queryDrugByPageForAll = (h, p) => fetch(!0, h, '/mall/api/experiment/queryDrugByPageForAll', p); //APP试点首页接口-查询满减、满赠促销商品列表
 
 export {
     headers,
@@ -49,5 +52,8 @@ export {
     listIndexFloorNew,
     listRecommendShop,
     listRecommendIndexFloor,
-    applyChannelapi
+    applyChannelapi,
+    mainH5Province,
+    isCommonOrPilotSite,
+    queryDrugByPageForAll
 }

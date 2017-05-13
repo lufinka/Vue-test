@@ -52,8 +52,8 @@
             },
             ajax: function() {
                 var data = {
-                    "spuCode": this.target[0].productCode,
-                    "sellerCode": this.target[0].productCodeCompany,
+                    "spuCode": this.target[0].productCode || this.target[0].productDrug.spu_code,
+                    "sellerCode": this.target[0].productCodeCompany || this.target[0].productDrug.seller_code,
                     "phoneNumber": this.vphone
                 };
                 this.$http.post('mall/api/addArrivalNotice', data, {

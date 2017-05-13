@@ -7,20 +7,25 @@
               <li v-for="(item,index) in promotionNav" :key="index" @click="active = 'tab-container'+(index+1)" :class="{actived:active == 'tab-container'+(index+1)}"><p v-text="item.shortName || item.shopName"></p></li>
           </ul>
       </div>
-      <a href="#">更多</a>
       </div>
       <mt-tab-container v-model="active" swipeable>
       <mt-tab-container-item  v-for="(item,index) in promotionList" :key="index" :id="'tab-container'+(index+1)">
       <div class="promotion-cont">
-         <ul>
-             <li v-for="(k,index) in item.products" :key="index">
-                  <homeProduct :special="k"></homeProduct>
+         <ul v-infinite-scroll="loadMore"
+  infinite-scroll-disabled="loading"
+  infinite-scroll-distance="10">
+             <li v-for="(p,index) in item" :key="index">
+                  <testProduct :special="p" :sysTime="sysTime"  ref="product"></testProduct>
              </li>
          </ul>
       </div>
+          <div class="promotion-cont empty"  v-if="empty[index]">
+              <p>暂无数据</p>
+          </div>
   </mt-tab-container-item>
 </mt-tab-container>
     </div>
+<add-car :target="addCartarget" ref="addscar"></add-car>
       </div>
 </template>
 
@@ -28,10 +33,15 @@
     import {
         Toast,
         TabContainer,
-        TabContainerItem
+        TabContainerItem,
+        Indicator
     } from 'mint-ui';
-    import homeProduct from '@/components/homeProduct';
+    import {
+        queryDrugByPageForAll
+    } from '@/service/getDate';
+    import testProduct from '@/components/testProduct';
     import products from "@/service/products";
+    import addCar from '@/components/addCar';
     console.log(products)
     export default {
         data() {
@@ -45,13 +55,107 @@
                 }, {
                     shortName: "满赠",
                     shopName: "满赠"
+                }, {
+                    shortName: "全部",
+                    shopName: "全部"
                 }],
-                promotionList: products,
-                active: 'tab-container1'
+                total: [0, 0, 0],
+                promotionType: 4,
+                sysTime: 0,
+                addCartarget: {}, //加入购物车对象
+                once: [!0, !1, !1],
+                empty: [!1, !1, !1],
+                timer: null,
+                promotionList: [
+                    [],
+                    [],
+                    []
+                ],
+                active: 'tab-container1',
+                loading: !1,
+                nowIndex:0
+            }
+        },
+        created() {
+            this.getData(0);
+        },
+        mounted() {
+            this.timer = setInterval(() => {
+                this.sysTime += 1000;
+            }, 1000);
+        },
+        watch: {
+            active(x, y) {
+                var n = x.substring(x.length - 1);
+                if (n == 1) {
+                    this.promotionType = 4;
+                    this.nowIndex = 0;
+                } else if (n == 2) {
+                    this.promotionType = 5;
+                    this.nowIndex = 1;
+                } else {
+                    this.promotionType = 7;
+                    this.nowIndex = 2;
+                }
+                if (this.once[n - 1] == !1) {
+                    this.once[n - 1] = !0;
+                    this.getData(n - 1);
+                }
+            },
+            route(x, y) {
+                console.log(x, y)
+            }
+        },
+        methods: {
+            noticeEvent(arg) {
+                this.$parent.noticeEvent(arg);
+            },
+            shopCar(arg) {
+                this.addCartarget = arg;
+                this.$refs.addscar.ishow = !0;
+            },
+            getData(num) {
+                Indicator.open();
+                queryDrugByPageForAll(this, {
+                    siteCode: '420000',
+                    promotionType: 4,
+                    pageIndex: 1,
+                    pageSize: this.promotionType
+                }).then((response) => {
+                    Indicator.close();
+                    if (response.body.data) {
+                        this.loading = !1;
+                        if (this.promotionList[num].length) {
+                            this.empty[num] = !0;
+                        }
+                        if (response.body.data.dataList[0].statusDesc == -1) {
+                            clearTimeout(this.timer);
+                        }
+                        for (var i = 0; i < response.body.data.dataList.length; i++) {
+                            this.promotionList[num].push(response.body.data.dataList[i])
+                            this.sysTime = response.body.data.sysTime;
+                        }
+                    }
+                }, (error) => {
+                    Indicator.close();
+                    this.loading = !1;
+                    Toast({
+                        message: error,
+                        position: 'bottom',
+                        duration: 2000
+                    });
+                });
+            },
+            loadMore() {
+                this.loading = !0;
+                console.log(1)
+                this.loading = !1;
+                //this.getData(this.nowIndex);
             }
         },
         components: {
-            homeProduct
+            testProduct,
+            addCar
         }
     }
 </script>
@@ -59,6 +163,13 @@
 <style scoped lang="less">
     @size : 37.5rem;
     @body_bgcolor: #f7f7f7;
+    .empty p {
+        text-align: center;
+        padding: 20/@size 0 30/@size;
+        color: #999;
+        font-size: 14/@size;
+    }
+    
     .promotion- {
         &wrapper {
             background-color: #fff;
@@ -67,21 +178,15 @@
             width: 100%;
             height: 42/@size;
             line-height: 42/@size;
-            a {
-                font-size: 13/@size;
-                color: #666;
-                float: right;
-                display: block;
-                height: 42/@size;
-                padding-right: 30/@size;
-            }
         }
         &tabs {
-            float: left;
+            width: 100%;
+            text-align: center;
             li {
+                width: 25%;
+                display: inline-block;
                 padding: 0 24/@size;
                 font-size: 13/@size;
-                float: left;
                 color: #666;
                 transition: all .218s linear;
                 p {

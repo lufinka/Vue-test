@@ -28,8 +28,9 @@
     @public_size : 37.5rem;
     .slide-wrapper {
         width: 100%;
-        background-color: #ddd;
         height: 180/@public_size;
+        overflow: hidden;
+        background-color: #ddd;
     }
     .mint-swipe {
         background: none;
