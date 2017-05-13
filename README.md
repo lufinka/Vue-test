@@ -1,4 +1,4 @@
-# lufinka
+# project
 
 > A Vue.js project
 
