@@ -7,6 +7,7 @@ const home = r => require.ensure([], () => r(require('@/pages/home/home.vue')), 
 const login = r => require.ensure([], () => r(require('@/pages/login/login.vue')), 'login');
 const commonHome = r => require.ensure([], () => r(require('@/pages/home/commonHome.vue')), 'common-home');
 const testHome = r => require.ensure([], () => r(require('@/pages/home/testHome.vue')), 'test-home');
+const pull = r => require.ensure([], () => r(require('@/pages/pull.vue')), 'pull');
 
 const App = r => require.ensure([], () => r(require('@/App.vue')), 'App')
 const slide = r => require.ensure([], () => r(require('@/components/slide.vue')), 'common-home');
@@ -40,6 +41,10 @@ export default new Router({
             path: '/login',
             name: 'login',
             component: login
+            }, {
+            path: '/pull',
+            name: 'pull',
+            component: pull
             }, {
             path: '/home',
             redirect: 'home',

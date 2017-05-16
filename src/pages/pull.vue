@@ -12,10 +12,10 @@
       <mt-tab-container v-model="active" swipeable>
       <mt-tab-container-item  v-for="(item,index) in promotionList" :key="index" :id="'tab-container'+(index+1)">
       <div class="promotion-cont" ref="wrapper" :style="{ height: wrapperHeight + 'px' }">
-        <mt-loadmore :bottom-method="loadBottom" :auto-fill="isfill"  @bottom-status-change="handleBottomChange" :bottom-all-loaded="allLoaded[index]" ref="loadmore">
+        <mt-loadmore :bottom-method="loadBottom" :autoFill="isfill"  @bottom-status-change="handleBottomChange" :bottom-all-loaded="allLoaded[index]" ref="loadmore">
          <ul>
              <li v-for="(p,index) in item" :key="index">
-                  <testProduct :special="p" :sysTime="sysTime"  ref="product"></testProduct>
+                  {{item[index]}}
              </li>
          </ul>
          <div slot="bottom" class="mint-loadmore-bottom">
@@ -64,8 +64,8 @@
                     shortName: "满赠",
                     shopName: "满赠"
                 }],
-                total: [0, 0, 0],
-                promotionType: 4,
+                total: [5, 50, 60],
+                promotionType: 7,
                 sysTime: 0,
                 addCartarget: {}, //加入购物车对象
                 once: [!0, !1, !1],
@@ -76,11 +76,11 @@
                     [],
                     []
                 ],
+                isfill:false,
                 active: 'tab-container1',
                 nowIndex: 0,
-                isfill: false,
-                allLoaded: [!1, !1, !1],
-                limmit: [0, 0, 0],
+                allLoaded: [!1,!1,!1,],
+                limmit: [5, 50, 60],
                 pageNow: [1, 1, 1],
                 wrapperHeight: 0,
                 bottomStatus: ['', '', '']
@@ -91,9 +91,6 @@
         },
         mounted() {
             this.wrapperHeight = document.documentElement.clientHeight - this.$refs.wrapper[0].getBoundingClientRect().top;
-            this.timer = setInterval(() => {
-                this.sysTime += 1000;
-            }, 1000);
         },
         watch: {
             active(x, y) {
@@ -118,63 +115,29 @@
             }
         },
         methods: {
-            noticeEvent(arg) {
-                this.$parent.noticeEvent(arg);
-            },
-            shopCar(arg) {
-                this.addCartarget = arg;
-                this.$refs.addscar.ishow = !0;
-            },
             getData(num) {
-                Indicator.open();
-                queryDrugByPageForAll(this, {
-                    siteCode: '420000',
-                    promotionType: this.promotionType,
-                    pageIndex: this.pageNow[num],
-                    pageSize: 5
-                }).then((response) => {
-                    Indicator.close();
-                    if (response.body.data.dataList.length) {
-                        this.loading = !1;
-                        this.limmit[num] = response.body.data.total;
-                        if (this.promotionList[num].length >= this.limmit[num]) {
-                            this.empty[num] = !0;
-                        }
-                        if (response.body.data.dataList[0].statusDesc == -1) {
-                            clearTimeout(this.timer);
-                        }
-                        for (var i = 0; i < response.body.data.dataList.length; i++) {
-                            this.promotionList[num].push(response.body.data.dataList[i]);
-                            this.promotionList[num][i].type = this.promotionType;
-                            this.sysTime = response.body.data.sysTime;
-                        }
-                        let lastValue = this.promotionList[num].length;
-                        if (lastValue >= this.limmit[num]) {
-                            console.log(lastValue, this.limmit[num])
-                            this.allLoaded[num] = !0;
-                        }
-                    }
-                }, (error) => {
-                    Indicator.close();
-                    this.loading = !1;
-                    Toast({
-                        message: error,
-                        position: 'bottom',
-                        duration: 2000
-                    });
-                });
+                for (let i = 1; i <= 5; i++) {
+                    this.promotionList[num].push(i);
+                }
             },
             handleBottomChange(status) {
                 this.bottomStatus[this.nowIndex] = status;
             },
             loadBottom() {
+                
+                    console.log(this.nowIndex)
                 setTimeout(() => {
+                    console.log(this.$refs.loadmore[this.nowIndex])
                     let lastValue = this.promotionList[this.nowIndex].length;
-                    if (lastValue < this.limmit[this.nowIndex]) {
-                        this.pageNow[this.nowIndex]++;
-                        this.getData(this.nowIndex);
+                    if (lastValue+1 < this.limmit[this.nowIndex]) {
+                        for (let i = 1; i <= 10; i++) {
+                            this.promotionList[this.nowIndex].push(lastValue + i);
+                        }
+                    } 
+                    console.log(lastValue)
+                    if(lastValue+10 >= this.limmit[this.nowIndex]){
+                        this.allLoaded[this.nowIndex] = !0;
                     }
-                    console.log(lastValue, this.limmit[this.nowIndex])
                     this.$refs.loadmore[this.nowIndex].onBottomLoaded();
                 }, 1500);
             }
@@ -214,9 +177,16 @@
     .promotion- {
         &wrapper {
             background-color: #fff;
+            margin-top: 300px;
         }
         &cont {
             overflow: scroll;
+            li{
+                width: 100%;
+                padding: 15px;
+                border-bottom: 1px solid #ddd;
+                text-align: center;
+            }
         }
         &title {
             width: 100%;

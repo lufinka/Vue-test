@@ -23,7 +23,7 @@
         mainH5Province,
         listIndexFloorNew
     } from '@/service/getDate';
-    headers.station = '000000';
+    headers.station = '420000';
     import slides from '@/components/slide';
     import notice from '@/components/notice';
     import city from '@/components/city';
