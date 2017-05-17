@@ -14,7 +14,7 @@
         <p class="product_buy_info">
             <span class="left" v-if="target.promotionlimitNum == 0">库存</span>
             <span class="left" v-else="target.promotionlimitNum == 0">库存:</span>
-            <span :class="{left: target.promotionlimitNum > 0,right:target.promotionlimitNum == 0,js_stock:true}">{{target.inventory}}</span>
+            <span :class="{left: target.promotionlimitNum > 0,right:!target.promotionlimitNum,js_stock:true}">{{target.inventory}}</span>
             <span class="right js_stock" v-if="target.promotionlimitNum > 0">{{target.promotionlimitNum}}</span>
             <span class="right" v-if="target.promotionlimitNum > 0">限购:</span>
         </p>
@@ -53,7 +53,7 @@
             count: function(newValue, oldValue) {
                 this.count = parseInt(this.count);
                 if (this.target.promotionlimitNum > 0) {
-                    if (newValue > this.target.promotionlimitNum) {
+                    if (newValue >= this.target.promotionlimitNum) {
                         this.count = this.target.promotionlimitNum;
                     } else if (newValue < this.target.inimumPacking) {
                         this.count = this.target.inimumPacking;
@@ -83,21 +83,21 @@
             },
             add: function() {
                 this.count = parseInt(this.count);
-                this.count += this.target.inimumPacking;
+                this.count += parseInt(this.target.inimumPacking);
             },
             addShopCarList: function() {
                 this.$http.post('/order/api/cart/addShopCart', {
                     "productCodeCompany": this.target.productCodeCompany,
-                    "spuCode": this.target.productCode,
+                    "spuCode": this.target.spuCode,
                     "productId": this.target.productId,
                     "productCount": this.count,
                     "productPrice": this.target.productPrice,
-                    "supplyId": this.target.productSupplyId,
-                    "productName": this.target.productSupplyName,
+                    "supplyId": this.target.supplyId,
+                    "productName": this.target.productName,
                     "promotionId": this.target.promotionId,
                     "promotionCollectionId": this.target.promotionCollectionId,
-                    "manufactures": this.target.factoryName,
-                    "specification": this.target.productSpec
+                    "manufactures": this.target.manufactures,
+                    "specification": this.target.specification
                 }, {
                     headers: headers
                 }).then(action => {
@@ -106,7 +106,7 @@
                         position: 'bottom',
                         duration: 2000
                     });
-                    if (action.body.data.result == "成功") {
+                    if (action.body.data && action.body.data.result == "成功") {
                         this.close();
                     }
                 }, error => {

@@ -6,7 +6,7 @@ const headers = {
     token: token,
     app_version: '0.0.1',
     os: 'h5',
-    station: '000000',
+    station: '370000',
     version: 'v1.2'
 };
 

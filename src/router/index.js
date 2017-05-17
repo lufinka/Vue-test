@@ -50,55 +50,55 @@ export default new Router({
             redirect: 'home',
             component: home,
             children: [{
-                path: '',
-                name: 'testHome',
-                component: testHome,
-                children: [{
-                    path: '/testProduct',
-                    name: 'testProduct',
-                    component: testProduct
+                    path: '',
+                    name: 'testHome',
+                    component: testHome,
+                    children: [{
+                        path: '/testProduct',
+                        name: 'testProduct',
+                        component: testProduct
                           }, {
-                    path: '/addCar',
-                    name: 'addCar',
-                    component: addCar
+                        path: '/addCar',
+                        name: 'addCar',
+                        component: addCar
                           }]
             }, {
-                path: '/commonHome',
-                name: 'commonHome',
-                component: commonHome,
-                children: [{
-                    path: '/bussine',
-                    name: 'bussine',
-                    component: bussine
+                    path: '/commonHome',
+                    name: 'commonHome',
+                    component: commonHome,
+                    children: [{
+                        path: '/bussine',
+                        name: 'bussine',
+                        component: bussine
             }, {
-                    path: '/goods',
-                    name: 'goods',
-                    component: goods
+                        path: '/goods',
+                        name: 'goods',
+                        component: goods
             }, {
-                    path: '/company',
-                    name: 'company',
-                    component: company
+                        path: '/company',
+                        name: 'company',
+                        component: company
+            }]
+            }, {
+                    path: '/homeProduct',
+                    name: 'homeProduct',
+                    component: homeProduct
             }, {
                     path: '/addShopCar',
                     name: 'addShopCar',
                     component: addShopCar
-            }]
             }, {
-                path: '/homeProduct',
-                name: 'homeProduct',
-                component: homeProduct
+                    path: '/slide',
+                    name: 'slide',
+                    component: slide
             }, {
-                path: '/slide',
-                name: 'slide',
-                component: slide
+                    path: '/city',
+                    name: 'city',
+                    component: city
             }, {
-                path: '/city',
-                name: 'city',
-                component: city
-            }, {
-                path: '/search',
-                name: 'search',
-                component: search
+                    path: '/search',
+                    name: 'search',
+                    component: search
             }]
             }, {
             path: '/index',

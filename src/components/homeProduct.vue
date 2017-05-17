@@ -78,10 +78,30 @@
         components: {},
         methods: {
             notice: function() {
-                this.$parent.noticeEvent(this.special);
+                var arg = {
+                    "spuCode": this.special.productCode,
+                    "sellerCode": this.special.productCodeCompany * 1,
+                };
+                this.$parent.noticeEvent(arg);
             },
             addShopCar: function() {
-                this.$parent.shopCar(this.special);
+                var obj = {
+                    "productCodeCompany": this.special.productCodeCompany,
+                    "spuCode": this.special.productCode,
+                    "productId": this.special.productId,
+                    "productPrice": this.special.productPrice,
+                    "supplyId": this.special.productSupplyId,
+                    "productName": this.special.productSupplyName,
+                    "promotionId": this.special.promotionId,
+                    "promotionCollectionId": this.special.promotionCollectionId,
+                    "manufactures": this.special.factoryName,
+                    "specification": this.special.productSpec,
+                    "productSpec": this.special.productSpec,
+                    "promotionlimitNum": this.special.promotionlimitNum,
+                    "inventory": this.special.inventory,
+                    "inimumPacking": this.special.inimumPacking
+                };
+                this.$parent.shopCar(obj);
             },
             addChannel: function() {
                 var data = JSON.stringify({
@@ -270,5 +290,4 @@
             }
         }
     }
-    
 </style>

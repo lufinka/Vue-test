@@ -8,7 +8,7 @@
            </a></li>
        </ul>
    </div>
-   <div class="special-wrapper">
+   <div class="special-wrapper" v-if="special.floorProductDtos && special.floorProductDtos.length">
        <div class="ui-title">
            <h2>{{special.name}}</h2>
            <a href="#">更多</a>
@@ -21,7 +21,7 @@
            </ul>
        </div>
    </div>
-   <div class="purchas-wrapper">
+   <div class="purchas-wrapper"  v-if="add && add.length">
        <ul>
            <li v-for="(item,index) in add" :key="index" :class="{mr:index==1,ml:index == 2}">
            <a :href="item.url"><img :alt="item.name" :src="item.imgPath" alt=""></a>
@@ -118,16 +118,21 @@
             noticeEvent(arg) {
                 this.$parent.noticeEvent(arg);
             },
-            shopCar(arg) {
-                this.addCartarget = arg;
+            shopCar(obj) {
+                this.addCartarget = obj;
                 this.$refs.addscar.ishow = !0;
             },
             firstScreen() {
                 Indicator.open();
                 listIndexFloorNew(this).then((response) => {
                     Indicator.close();
-                    this.menu = response.body.data.fastList;
-                    this.special = response.body.data.floorProduct[0];
+                    var data = response.body.data;
+                    if(data.fastList && data.fastList.length){
+                    this.menu = data.fastList;
+                    }
+                    if(data.floorProduct && data.floorProduct.length){
+                    this.special = data.floorProduct[0];
+                    }
                 }, (error) => {
                     Indicator.close();
                     Toast({
@@ -141,7 +146,10 @@
                 listIndexFloor(this, {
                     type: 4
                 }).then((response) => {
-                    this.add = response.body.data;
+                    var data = response.body.data;
+                    if(data && data.length){
+                    this.add = data;
+                    }
                 }, (error) => {
                     Toast({
                         message: error,
@@ -156,7 +164,10 @@
                     per: 3,
                     queryAll: false
                 }).then((response) => {
-                    this.shopList = response.body.data.shopList;
+                var data = response.body.data;
+                    if(data.shopList && data.shopList.length){
+                    this.shopList = data.shopList;
+                    }
                 }, (error) => {
                     Toast({
                         message: error,
@@ -171,7 +182,10 @@
                    size:5,
                    type:5
                 }).then((response) => {
-                    this.goodList = response.body.data.floors;
+                   var data = response.body.data;
+                    if(data.floors && data.floors.length){
+                    this.shopList = data.floors;
+                    }
                 }, (error) => {
                     Toast({
                         message: error,

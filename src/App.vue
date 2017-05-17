@@ -13,6 +13,8 @@
             aa: function() {
                 console.log(1)
             }
+        },mounted(){
+            console.log(this,23)
         }
     }
 </script>

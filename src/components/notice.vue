@@ -40,7 +40,6 @@
             },
             notice: function() {
                 if (this.pattern.test(this.vphone)) {
-                    console.log(this.target[0])
                     this.ajax();
                 } else {
                     Toast({
@@ -51,21 +50,21 @@
                 }
             },
             ajax: function() {
-                var data = {
-                    "spuCode": this.target[0].productCode || this.target[0].productDrug.spu_code,
-                    "sellerCode": this.target[0].productCodeCompany || this.target[0].productDrug.seller_code,
-                    "phoneNumber": this.vphone
-                };
-                this.$http.post('mall/api/addArrivalNotice', data, {
+                var resData = this.target[0];
+                resData.phoneNumber = this.vphone;
+                console.log(resData,2)
+                this.$http.post('mall/api/addArrivalNotice', resData, {
                     headers: headers,
                     emulateJSON:true
                 }).then(action => {
+                    this.close();
                     Toast({
                         message: action.body.message,
                         position: 'bottom',
                         duration: 2000
                     });
                 }, error => {
+                    this.close();
                     Toast({
                         message: error.body.message,
                         position: 'bottom',

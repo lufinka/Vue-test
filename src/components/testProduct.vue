@@ -107,6 +107,19 @@
                 type: Number
             }
         },
+        mounted() {
+            var str = '';
+            if (this.special.productDrug.productPromotionInfos) {
+                var obj = this.special.productDrug.productPromotionInfos;
+                for (var i = 0; i < obj.length; i++) {
+                    str += obj[i].promotion_id + ",";
+                }
+                this.$set(this.special,'promotionCollectionIds',str.substring(0, str.length - 1));
+                console.log(this.special)
+            } else {
+                this.$set(this.special,'promotionCollectionIds','');
+            }
+        },
         computed: {
             countDown() {
                 if (this.special.productDrug.productPromotion && this.special.productDrug.productPromotion.end_time) {
@@ -146,10 +159,30 @@
                 }
             },
             notice() {
-                this.$parent.$parent.$parent.noticeEvent(this.special);
+                var arg = {
+                    "spuCode": this.special.productDrug.spu_code,
+                    "sellerCode": this.special.productDrug.seller_code,
+                };
+                this.$parent.$parent.$parent.$parent.noticeEvent(arg);
             },
             addShopCar() {
-                this.$parent.$parent.$parent.shopCar(this.special);
+                var obj = {
+                    "productCodeCompany": this.special.productDrug.productcode_company,
+                    "spuCode": this.special.productDrug.spu_code,
+                    "productId": this.special.productDrug.idd,
+                    "productPrice": this.special.productDrug.showPrice,
+                    "supplyId": this.special.productDrug.seller_code,
+                    "productName": this.special.productDrug.short_name,
+                    "promotionId": this.special.productDrug.productPromotion && this.special.productDrug.productPromotion.promotion_id,
+                    "promotionCollectionId": this.special.promotionCollectionIds,
+                    "manufactures": this.special.productDrug.factory_name_cn,
+                    "specification": this.special.productDrug.spec,
+                    "productSpec": this.special.productDrug.spec,
+                    "promotionlimitNum": this.special.productDrug.productPromotion && this.special.productDrug.productPromotion.limit_num,
+                    "inventory": this.special.productDrug.stock_amount,
+                    "inimumPacking": this.special.productDrug.minimum_packing
+                };
+                this.$parent.$parent.$parent.$parent.shopCar(obj);
             },
             addChannel() {
                 MessageBox.confirm('确定加入渠道?').then(action => {
@@ -261,7 +294,7 @@
                         float: left;
                     }
                 }
-                .saleNumber{
+                .saleNumber {
                     float: right;
                 }
             }

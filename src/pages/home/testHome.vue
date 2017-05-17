@@ -32,7 +32,7 @@
   </mt-tab-container-item>
 </mt-tab-container>
     </div>
-<add-car :target="addCartarget" ref="addscar"></add-car>
+<add-shop-car :target="addCartarget" ref="addscar"></add-shop-car>
       </div>
 </template>
 
@@ -49,7 +49,7 @@
     } from '@/service/getDate';
     import testProduct from '@/components/testProduct';
     import products from "@/service/products";
-    import addCar from '@/components/addCar';
+    import addShopCar from '@/components/addShopCar';
     console.log(products)
     export default {
         data() {
@@ -181,7 +181,7 @@
         },
         components: {
             testProduct,
-            addCar
+            addShopCar
         }
     }
 </script>
