@@ -17,7 +17,6 @@ const bussine = r => require.ensure([], () => r(require('@/components/bussine.vu
 const goods = r => require.ensure([], () => r(require('@/components/goods.vue')), 'common-home');
 const company = r => require.ensure([], () => r(require('@/components/company.vue')), 'common-home');
 const addShopCar = r => require.ensure([], () => r(require('@/components/addShopCar.vue')), 'home');
-const addCar = r => require.ensure([], () => r(require('@/components/addCar.vue')), 'test-home');
 const notice = r => require.ensure([], () => r(require('@/components/notice.vue')), 'home');
 const city = r => require.ensure([], () => r(require('@/components/city.vue')), 'home');
 const search = r => require.ensure([], () => r(require('@/components/search.vue')), 'home');
@@ -50,55 +49,51 @@ export default new Router({
             redirect: 'home',
             component: home,
             children: [{
-                    path: '',
-                    name: 'testHome',
-                    component: testHome,
-                    children: [{
-                        path: '/testProduct',
-                        name: 'testProduct',
-                        component: testProduct
-                          }, {
-                        path: '/addCar',
-                        name: 'addCar',
-                        component: addCar
+                path: '',
+                name: 'testHome',
+                component: testHome,
+                children: [{
+                    path: '/testProduct',
+                    name: 'testProduct',
+                    component: testProduct
                           }]
             }, {
-                    path: '/commonHome',
-                    name: 'commonHome',
-                    component: commonHome,
-                    children: [{
-                        path: '/bussine',
-                        name: 'bussine',
-                        component: bussine
+                path: '/commonHome',
+                name: 'commonHome',
+                component: commonHome,
+                children: [{
+                    path: '/bussine',
+                    name: 'bussine',
+                    component: bussine
             }, {
-                        path: '/goods',
-                        name: 'goods',
-                        component: goods
+                    path: '/goods',
+                    name: 'goods',
+                    component: goods
             }, {
-                        path: '/company',
-                        name: 'company',
-                        component: company
+                    path: '/company',
+                    name: 'company',
+                    component: company
             }]
             }, {
-                    path: '/homeProduct',
-                    name: 'homeProduct',
-                    component: homeProduct
+                path: '/homeProduct',
+                name: 'homeProduct',
+                component: homeProduct
             }, {
-                    path: '/addShopCar',
-                    name: 'addShopCar',
-                    component: addShopCar
+                path: '/addShopCar',
+                name: 'addShopCar',
+                component: addShopCar
             }, {
-                    path: '/slide',
-                    name: 'slide',
-                    component: slide
+                path: '/slide',
+                name: 'slide',
+                component: slide
             }, {
-                    path: '/city',
-                    name: 'city',
-                    component: city
+                path: '/city',
+                name: 'city',
+                component: city
             }, {
-                    path: '/search',
-                    name: 'search',
-                    component: search
+                path: '/search',
+                name: 'search',
+                component: search
             }]
             }, {
             path: '/index',

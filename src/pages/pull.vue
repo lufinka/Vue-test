@@ -49,7 +49,6 @@
     } from '@/service/getDate';
     import testProduct from '@/components/testProduct';
     import products from "@/service/products";
-    import addCar from '@/components/addCar';
     console.log(products)
     export default {
         data() {
@@ -143,8 +142,7 @@
             }
         },
         components: {
-            testProduct,
-            addCar
+            testProduct
         }
     }
 </script>
