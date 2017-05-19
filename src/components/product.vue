@@ -1,6 +1,6 @@
 <template>
     <div class="product-wrapper">
-       <a href="#">
+       <a :href="'info?productId='+special.productId+'&enterpriseId='+special.productSupplyId">
         <div class="product-photo"><img v-lazy="special.productPicUrl" alt=""></div>
         <div class="product-text">
             <h2>{{special.productName}}&nbsp;{{special.spec}}</h2>
@@ -19,7 +19,7 @@
                         <h4 v-else-if="special.statusDesc == -1">
                         <div class="price">
                         </div>
-                        <a href="login.html" class="btn btn_login">登录</a>
+                        <router-link to="login" class="btn btn_login">登录</router-link>
                         </h4>
                         <h4 v-else-if="special.statusDesc == -2">
                         <div class="price">

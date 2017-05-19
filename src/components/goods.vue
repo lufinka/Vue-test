@@ -1,6 +1,6 @@
 <template>
     <div class="goods">
-    <a :href="'/product.html?productId='+good.productId+'&enterpriseId='+good.vendorId">
+    <router-link :to="'info/'+good.productId+'/'+good.vendorId">
     <div class="img">
         <img v-lazy="good.imgPath" alt="">
     </div>
@@ -35,7 +35,7 @@
     <h4 v-else-if="good.statusDesc == -7">
         <p class="prompt">已下架</p>
     </h4>
-    </a>
+    </router-link>
 </div>
 </template>
 

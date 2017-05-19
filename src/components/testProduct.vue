@@ -23,7 +23,7 @@
          </div>
         <div class="saleNumber">销量：{{special.productDrug.sales_total | saleCount}}{{special.productDrug.unit_cn}}</div>
     </div>
-    <a :href="'/product.html?productId='+special.productId+'&enterpriseId='+special.productDrug.seller_code">
+    <router-link :to="'info/'+special.productDrug.idd+'/'+special.productDrug.seller_code">
         <div class="product-photo"><img v-lazy="special.productDrug.pic_path" alt=""></div>
         <div class="product-text">
             <h2>{{special.productDrug.short_name}}&nbsp;{{special.productDrug.spec}}</h2>
@@ -85,7 +85,7 @@
                 <button class="btn_warning btn" @click.stop.prevent>无采购权限</button>
             </h4>
         </div>
-    </a>
+    </router-link>
 </div>
 </template>
 

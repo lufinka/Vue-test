@@ -1,6 +1,6 @@
 <template>
     <div class="product-wrapper">
-    <a :href="'/product.html?productId='+special.productId+'&enterpriseId='+special.productSupplyId">
+     <router-link :to="'info/'+special.productId+'/'+special.productSupplyId">
         <div class="product-photo"><img v-lazy="special.imgPath" alt=""></div>
         <div class="product-text">
             <h2>{{special.productSupplyName}}&nbsp;{{special.productSpec}}</h2>
@@ -56,7 +56,7 @@
                 <button class="btn_warning btn" @click.stop.prevent>无采购权限</button>
             </h4>
         </div>
-    </a>
+    </router-link>
 </div>
 </template>
 
