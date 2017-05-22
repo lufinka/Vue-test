@@ -7,14 +7,16 @@
 </template>
 
 <script>
+    import iconfont from '@/service/iconfont'
     export default {
         name: 'app',
         methods: {
             aa: function() {
                 console.log(1)
             }
-        },mounted(){
-            console.log(this,23)
+        },
+        mounted() {
+            console.log(this, 23)
         }
     }
 </script>
@@ -24,6 +26,14 @@
     @import "//unpkg.com/mint-ui/lib/style.css";
     body {
         font-size: 0.4rem;
+    }
+    
+    .icon {
+        width: 1em;
+        height: 1em;
+        vertical-align: -0.15em;
+        fill: currentColor;
+        overflow: hidden;
     }
     
     #app {
@@ -51,7 +61,7 @@
         opacity: 0;
     }
     
-    .mint-msgbox-btn.mint-msgbox-confirm{
+    .mint-msgbox-btn.mint-msgbox-confirm {
         color: #FE403B!important;
     }
     
