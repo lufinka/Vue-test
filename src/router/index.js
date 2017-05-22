@@ -29,7 +29,6 @@ const c = r => require.ensure([], () => r(require('@/components/c.vue')), 'c');
 Vue.use(Router)
 
 export default new Router({
-    mode: 'history',
     routes: [{
         path: '/',
         component: App,
