@@ -149,7 +149,11 @@
                 </dl>
             </section>
         </mt-tab-container-item>
-        <mt-tab-container-item id="tab-container2" v-show="info.storyList.length"></mt-tab-container-item>
+        <mt-tab-container-item id="tab-container2" v-show="info.storyList.length">
+            <div class="product_intro_img">
+        	<img v-for="(item,index) in info.storyList" :key="index" src="../../images/null.jpg" v-lazy="item" alt="">
+        	</div>
+        </mt-tab-container-item>
         <mt-tab-container-item id="tab-container3">
     <div class="product_instr">
                 <section>
@@ -335,6 +339,40 @@
         </li>
 
     </ul>
+    <div class="add_container">
+            <p class="add_footer">
+                <a v-if="info.vendorId==8353" href="selfstores.html?enterpriseId=8353"><span class="footer_icon store">店铺</span></a>
+                <a v-else :href="'shop.html?enterpriseId='+info.vendorId"><span class="footer_icon store">店铺</span></a>
+                <router-link to="/shopCar" class="footer_icon shop_car">
+                    <i class="shop_count">0</i>
+                </router-link>
+                <button  v-if="info.statusDesc == 0" @click.stop.prevent="addShopCar" class="btn_product_public btn_add_list">去抢购</button>
+                <router-link v-else-if="info.statusDesc == -1" to="login" class="btn btn_login">登录</router-link>
+                <button v-else-if="info.statusDesc == -2" class="btn_product_public btn_add_channel" @click.stop.prevent="addChannel">加入渠道</button>
+                <button v-else-if="info.statusDesc == -3" class="btn_product_off btn_check_qualification" @click.stop.prevent>资质未认证</button>
+                <button v-else-if="info.statusDesc == -4" class="btn_product_off" @click.stop.prevent>渠道待审核</button>
+                <button v-else-if="info.statusDesc == -5" class="btn_product_off btn_lack" @click.stop.prevent="notice">到货通知</button>
+                <button v-else-if="info.statusDesc == -6" class="btn_product_off" @click.stop.prevent>不可购买</button>
+                <button v-else-if="info.statusDesc == -7" class="btn_warning btn" @click.stop.prevent>已下架</button>
+            </p>
+            <div class="product_buy">
+                <p>
+                    <i class="btn_reduce_number left"></i>
+                    <input type="number" name="number" class="product_number"  />
+                    <i class="btn_add_number btn_add_number_ok right"></i>
+                </p>
+                <p class="product_buy_info">
+                    <span class="left">库存</span>
+                    <span class="right js_stock"></span>
+                </p>
+                <p class="product_buy_info">
+                    <span class="left">最小可拆零包装</span>
+                    <span class="right js_min" ></span>
+                </p>
+                <p class="error_msg"></p>
+                <a href="javascript:" class="btn_next_ok js_add_list">加入进货单</a>
+            </div>
+        </div>
 </div>
 <div v-else class="noData">
     <p>无该商品信息</p>
@@ -557,6 +595,12 @@
 .point{
   color: #999999;
   font-size: 12/@size;
+}
+    .product_intro_img{
+    padding-bottom: 60/@size;
+    img{
+        width: 100%;
+    }
 }
     .info_list {
         margin-bottom: 5/@size;
@@ -795,6 +839,64 @@
       padding: 10/@size 10/@size 0;
       background-color: #fff;
     }
+  }
+}
+    
+    .add_container{
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  box-sizing: border-box;
+  height: 60/@size;
+  padding: 9/@size 0;
+  background-color: #fff;
+  z-index: 3;
+  .footer_icon{
+    display: inline-block;
+    box-sizing: border-box;
+    position: absolute;
+    top:50%;
+    transform:translateY(-50%);
+    font-size: 11/@size;
+    padding-top: 19/@size;
+    color: #8F8E94;
+  }
+  .store{
+    left:0 ;
+    background: url("../../images/product/icon_store.png") top no-repeat;
+    background-size: 15/@size 15/@size;
+  }
+  .shop_car{
+    left: 59/@size;
+    background: url("../../images/icon_shopcar.png") top no-repeat;
+    background-size: 15/@size 15/@size;
+  }
+  .add_footer{
+    position: relative;
+    margin: 0 10/@size 0 25/@size;
+    height: 100%;
+  }
+  .btn_product_off,.btn_product_public{
+    display: inline-block;
+    position: absolute;
+    margin:0;
+    top:50%;
+    right:0 ;
+    transform:translateY(-50%);
+    text-align: center;
+      width: 218/@size;
+      height: 35/@size;
+      line-height: 35/@size;
+      font-size: 15/@size;
+    background-image: linear-gradient(-180deg, #FF5B3B 0%, #FE403B 100%);
+    box-shadow: 0 2px 8px 0 rgba(254,64,59,0.50);
+    border-radius: 4px;
+    color: #FFFFFF;
+  }
+  .btn_product_off{
+    background-image: linear-gradient(-180deg, #CAC8C8 0%, #A19F9F 100%);
+    box-shadow: 0px 2px 8px 0px rgba(120,111,111,0.50);
   }
 }
 </style>
