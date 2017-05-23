@@ -39,6 +39,7 @@ var listRecommendShop = (h, p) => fetch(!1, h, '/mall/api/shop/listRecommendShop
 var listRecommendIndexFloor = (h, p) => fetch(!1, h, '/manage/api/mobileIndex/listRecommendIndexFloor', p); //首页品类列表
 var isCommonOrPilotSite = (h, p) => fetch(!1, h, '/manage/api/mobileIndex/isCommonOrPilotSite', p); //是否试点、通用
 var queryDrugByPageForAll = (h, p) => fetch(!0, h, '/mall/api/experiment/queryDrugByPageForAll', p); //APP试点首页接口-查询满减、满赠促销商品列表
+var getProductDetail = (h, p) => fetch(!1, h, '/mall/api/product/getProductDetail', p); //商品详细信息
 
 export {
     headers,
@@ -55,5 +56,6 @@ export {
     applyChannelapi,
     mainH5Province,
     isCommonOrPilotSite,
-    queryDrugByPageForAll
+    queryDrugByPageForAll,
+    getProductDetail
 }

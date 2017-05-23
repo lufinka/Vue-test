@@ -4,7 +4,9 @@
   <city :target="province"></city>
   <search></search>
   </div>
-   <slides :slideData="slideData"></slides>
+   <div class="slide">
+       <slides :slideData="slideData"></slides>
+   </div>
    <transition name="router-fade" mode="out-in">
     		<router-view></router-view>
     	</transition>
@@ -31,7 +33,7 @@
             return {
                 slideData: [], //焦点图数据
                 target: [], //到货通知
-                province:[] //城市列表数据
+                province: [] //城市列表数据
             }
         },
         created() {
@@ -59,7 +61,7 @@
                     });
                 });
             },
-            getProvince(){
+            getProvince() {
                 mainH5Province(this).then((response) => {
                     this.province = response.body.data;
                 }, (error) => {
@@ -80,7 +82,8 @@
     * {
         box-sizing: border-box;
     }
-    .topbar{
+    
+    .topbar {
         position: fixed;
         display: flex;
         top: 9/@size;
@@ -89,8 +92,13 @@
         right: 0;
         z-index: 7;
     }
+    
     body {
         background-color: @body_bgcolor;
+    }
+    
+    .slide {
+        height: 180/@size;
     }
     
     .arrow_right {

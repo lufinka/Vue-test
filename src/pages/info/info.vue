@@ -1,74 +1,343 @@
 <template>
-<div class="info">
-<div class="info-header">
-   <div class="cont">
-        <section class="head_goback" @click="$router.go(-1)">
-            <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" version="1.1">
-                <polyline points="12,18 4,9 12,0" style="fill:none;stroke:#3c3c3c;stroke-width:2" transform="scale(1.2, 1.2)"/>
+<div class="info" v-if="info.productName && info.productId">
+    <div class="info-header">
+        <div class="cont">
+            <section class="head_goback" @click="$router.go(-1)">
+                <svg class="icon" aria-hidden="true">
+                 <use xlink:href="#icon-fanhui"></use>
             </svg>
-        </section>
-        <div class="info-tabs">
-              <ul>
-                  <li @click="active = 'tab-container1'" :class="{actived:active == 'tab-container1'}">商品</li>
-                  <li @click="active = 'tab-container2'" :class="{actived:active == 'tab-container2'}">品牌故事</li>
-                  <li @click="active = 'tab-container3'" :class="{actived:active == 'tab-container3'}">说明书</li>
-              </ul>
-        </div>
-        <div class="info-handle">
-            <span></span>
-            <span></span>
-            <span></span>
+            </section>
+            <div class="info-tabs">
+                <ul>
+                    <li @click="active = 'tab-container1'" :class="{actived:active == 'tab-container1'}">商品</li>
+                    <li v-show="info.storyList.length" @click="active = 'tab-container2'" :class="{actived:active == 'tab-container2'}">品牌故事</li>
+                    <li @click="active = 'tab-container3'" :class="{actived:active == 'tab-container3'}">说明书</li>
+                </ul>
+            </div>
+            <div class="info-handle">
+                <div class="dottle" @click="showTool = !showTool">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <div class="toggle-tool" v-if="showTool">
+                        <div class="cont">
+                            <i></i>
+                            <router-link to="/home">
+                                <svg class="icon" aria-hidden="true">
+                            <use xlink:href="#icon-home"></use>
+                        </svg>
+                                <p>首页</p>
+                            </router-link>
+                            <router-link to="/search">
+                                <svg class="icon" aria-hidden="true">
+                            <use xlink:href="#icon-searchlist"></use>
+                        </svg>
+                                <p>搜索</p>
+                            </router-link>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
-<mt-tab-container v-model="active" swipeable>
-      <mt-tab-container-item id="tab-container1">111</mt-tab-container-item>
-      <mt-tab-container-item id="tab-container2">222</mt-tab-container-item>
-      <mt-tab-container-item id="tab-container3">333</mt-tab-container-item>
-</mt-tab-container>
-<ul class="icon_lists clear">
-            
-                <li>
-                    <svg class="icon" aria-hidden="true">
+    <mt-tab-container v-model="active">
+        <mt-tab-container-item id="tab-container1">
+            <div class="slide-box">
+                <slides :slideData="slideData"></slides>
+            </div>
+            <section class="info_list">
+                <div class="info_cont">
+                    <section>
+                        <p>
+                            <h4>{{info.productName}}&nbsp;&nbsp;{{info.spec}}</h4>
+                        </p>
+                        <div class="price" v-if="info.statusDesc == 0 || info.statusDesc == -5">
+                            <p v-if="info.statusDesc != -5 && info.productPromotion && info.productPromotion.promotionId != 0">
+                                <span class="new"><i>￥</i>{{info.productPromotion.promotionPrice | price}}</span>
+                                <span class="old">￥{{info.productPrice | price:''}}</span>
+                                <span v-if="info.productPromotion" class="sale_type_tj" data-type="特价"></span>
+                                <span v-else class="new"><i>￥</i>{{info.productPrice | price}}</span>
+                            </p>
+                            <p v-else>
+                                <span class="new"><i>￥</i>{{info.productPrice | price}}</span>
+                            </p>
+                            <span class="sale_limmit_num">起售{{info.baseCount}}</span>
+                        </div>
+                    </section>
+                </div>
+            </section>
+            <div class="info_list" v-if="info.statusDesc == 0 && info.filteredPromotionList != null && info.filteredPromotionList.length > 0">
+                <!-- 满减优惠文描 -->
+               <div v-for="(item,index) in info.filteredPromotionList" :key="index">
+                <a v-if="item.promotionType ==1 || item.promotionType ==2 || item.promotionType ==3 && item.productPromotionRules!=null" :class="{look_promotionInfo:index == 0}">
+                        <div :class="{sale_tips:index == 0,sale_tips_1:index == 0}" data-type="满减">
+                            <p>
+                               {{item.promotionDesc}} 
+                            </p>
+                    </div>
+                </a>
+                <a v-else-if="item.promotionType ==7 || item.promotionType ==8" :class="{look_promotionInfo:index == 0}">
+                    <div :class="{sale_tips:index == 0,sale_tips_1:index == 0}" data-type="满赠">
+                        <p>{{item.promotionDesc}}</p>
+                    </div>
+                </a>
+                <a v-else-if="item.promotionType ==5 || item.promotionType ==6" :class="{look_promotionInfo:index == 0}">
+                    <div :class="{sale_tips:index == 0,sale_tips_1:index == 0}" data-type="满赠">
+                        <p>{{item.promotionDesc}}</p>
+                    </div>
+                </a>
+                </div>
+            </div>
+            <section class="info_list">
+                <ul class="product_base_info">
+                    <li class="item">
+                        <p>
+                            <span class="name">库存</span>
+                            <span class="value">
+                            {{ info.stockCount >500 ? ">500" : info.stockCount}}
+                            </span>
+                        </p>
+                    </li>
+                    <li class="item">
+                        <p>
+                            <span class="name">最小拆零包装</span>
+                            <span class="value">{{ info.stepCount }}{{info.unit}}</span>
+                        </p>
+                    </li>
+                    <li class="item">
+                        <p>
+                            <span class="name">供应商</span>
+                            <span class="value">{{ info.vendorName }}</span>
+                        </p>
+                    </li>
+                    <li class="item">
+                        <p>
+                            <span class="name">生产厂商</span>
+                            <span class="value">{{ info.factoryName }}</span>
+                        </p>
+                    </li>
+                    <li class="item">
+                        <p>
+                            <span class="name">批准文号</span>
+                            <span class="value">{{ info.approvalNum }}</span>
+                        </p>
+                    </li>
+                    <li class="item">
+                        <p>
+                            <span class="name">商品名</span>
+                            <span class="value">{{info.productName}}</span>
+                        </p>
+                    </li>
+                </ul>
+            </section>
+            <section class="info_list info_last_list">
+                <dl class="product_base_info product_rights">
+                    <dt class="item item_title">权益保障</dt>
+                    <dd class="item certified">
+                        <span class="main">100%正品</span>
+                        <span class="explain">完整资质认证</span>
+                        <a href="#" title="查看资质" class="btn_look">查看资质</a>
+                    </dd>
+                    <dd class="item service">
+                        <span class="main">金牌服务</span>
+                        <span class="explain">销售物流售后率表现高于同行</span>
+                    </dd>
+                    <dd class="item terrace">
+                        <span class="main">平台认证</span>
+                        <span class="explain">已获得1号药城专业认证</span>
+                    </dd>
+                </dl>
+            </section>
+        </mt-tab-container-item>
+        <mt-tab-container-item id="tab-container2" v-show="info.storyList.length"></mt-tab-container-item>
+        <mt-tab-container-item id="tab-container3">
+    <div class="product_instr">
+                <section>
+                    <div class="product_header">
+                        <h3 class="product_name">{{info.productName }}说明书</h3>
+                        <p class="point">请仔细阅读说明书，按医生指导购买和服用！</p>
+                    </div>
+                    <div class="product_ext_info">
+                        <dl>
+                            <dt class="type">商品名称</dt>
+                            <dd class="detail">
+                                <span>通用名称</span>
+                                <span class="name">{{info.ext.commonName }}</span>
+                            </dd>
+                            <dd class="detail">
+                                <span>汉语拼音</span>
+                                <span class="name">{{info.ext.commonNamePinyin }}</span>
+                            </dd>
+                            <dd class="detail">
+                                <span>商品名称</span>
+                                <span class="name">{{info.productName }}</span>
+                            </dd>
+                        </dl>
+                    </div>
+                </section>
+                <ul class="product_ext_info">
+                    <li>
+                        <section>
+                            <p class="type">成分</p>
+                            <p class="detail">
+                                <span>{{info.ext.incredinet }}</span>
+                            </p>
+                        </section>
+                    </li>
+                    <li>
+                        <section>
+                            <p class="type">性状</p>
+                            <p class="detail">
+                                <span>{{info.ext.character }}</span>
+                            </p>
+                        </section>
+                    </li>
+                    <li>
+                        <section>
+                            <p class="type">作用类别</p>
+                            <p class="detail">
+                                <span>{{info.ext.actionType }}</span>
+                            </p>
+                        </section>
+                    </li>
+                    <li>
+                        <section>
+                            <p class="type">适应症</p>
+                            <p class="detail">
+                                <span>{{info.ext.adaptationDisease }}</span>
+                            </p>
+                        </section>
+                    </li>
+                    <li>
+                        <section>
+                            <p class="type">用法用量</p>
+                            <p class="detail">
+                                <span>{{info.ext.directions }}</span>
+                            </p>
+                        </section>
+                    </li>
+                    <li>
+                        <section>
+                            <p class="type">不良反应</p>
+                            <p class="detail">
+                                <span>{{info.ext.untowardEffect }}</span>
+                            </p>
+                        </section>
+                    </li>
+                    <li>
+                        <section>
+                            <p class="type">禁忌</p>
+                            <p class="detail">
+                                <span>{{info.ext.taboo }}</span>
+                            </p>
+                        </section>
+                    </li>
+                    <li>
+                        <section>
+                            <p class="type">注意事项</p>
+                            <p class="detail">
+                                <span>{{info.ext.announcements }}</span>
+                            </p>
+                        </section>
+                    </li>
+                    <li>
+                        <section>
+                            <p class="type">药物相互作用</p>
+                            <p class="detail">
+                                <span>{{info.ext.drugInteractions }}</span>
+                            </p>
+                        </section>
+                    </li>
+                    <li>
+                        <section>
+                            <p class="type">贮藏</p>
+                            <p class="detail">
+                                <span>{{info.ext.storage }}</span>
+                            </p>
+                        </section>
+                    </li>
+                    <li>
+                        <section>
+                            <p class="type">包装</p>
+                            <p class="detail">
+                                <span>{{info.ext.pack }}</span>
+                            </p>
+                        </section>
+                    </li>
+                    <li>
+                        <section>
+                            <p class="type">有效期</p>
+                            <p class="detail">
+                                <span>{{info.ext.expiryDate }}</span>
+                            </p>
+                        </section>
+                    </li>
+                    <li>
+                        <section>
+                            <p class="type">执行标准</p>
+                            <p class="detail">
+                                <span>{{info.ext.carriedStandard }}</span>
+                            </p>
+                        </section>
+                    </li>
+                    <li>
+                        <section>
+                            <p class="type">说明书修订日期</p>
+                            <p class="detail">
+                                <span>{{info.ext.manualRevisionDate }}</span>
+                            </p>
+                        </section>
+                    </li>
+                </ul>
+            </div>
+    </mt-tab-container-item>
+    </mt-tab-container>
+    <ul class="icon_lists clear">
+
+        <li>
+            <svg class="icon" aria-hidden="true">
                         <use xlink:href="#icon-home"></use>
                     </svg>
-                    <div class="name">home</div>
-                    <div class="fontclass">#icon-home</div>
-                </li>
-            
-                <li>
-                    <svg class="icon" aria-hidden="true">
+            <div class="name">home</div>
+            <div class="fontclass">#icon-home</div>
+        </li>
+
+        <li>
+            <svg class="icon" aria-hidden="true">
                         <use xlink:href="#icon-shop"></use>
                     </svg>
-                    <div class="name">shop</div>
-                    <div class="fontclass">#icon-shop</div>
-                </li>
-            
-                <li>
-                    <svg class="icon" aria-hidden="true">
+            <div class="name">shop</div>
+            <div class="fontclass">#icon-shop</div>
+        </li>
+
+        <li>
+            <svg class="icon" aria-hidden="true">
                         <use xlink:href="#icon-fanhui"></use>
                     </svg>
-                    <div class="name">返回</div>
-                    <div class="fontclass">#icon-fanhui</div>
-                </li>
-            
-                <li>
-                    <svg class="icon" aria-hidden="true">
+            <div class="name">返回</div>
+            <div class="fontclass">#icon-fanhui</div>
+        </li>
+
+        <li>
+            <svg class="icon" aria-hidden="true">
                         <use xlink:href="#icon-searchlist"></use>
                     </svg>
-                    <div class="name">search_list</div>
-                    <div class="fontclass">#icon-searchlist</div>
-                </li>
-            
-                <li>
-                    <svg class="icon" aria-hidden="true">
+            <div class="name">search_list</div>
+            <div class="fontclass">#icon-searchlist</div>
+        </li>
+
+        <li>
+            <svg class="icon" aria-hidden="true">
                         <use xlink:href="#icon-shopcar"></use>
                     </svg>
-                    <div class="name">shopcar</div>
-                    <div class="fontclass">#icon-shopcar</div>
-                </li>
-            
-        </ul>
+            <div class="name">shopcar</div>
+            <div class="fontclass">#icon-shopcar</div>
+        </li>
+
+    </ul>
+</div>
+<div v-else class="noData">
+    <p>无该商品信息</p>
 </div>
 </template>
 
@@ -78,43 +347,454 @@
         TabContainer,
         TabContainerItem,
     } from 'mint-ui';
+    import {
+        getProductDetail
+    } from '@/service/getDate';
+    import slides from '@/components/slide';
     export default {
         data() {
             return {
-                active: 'tab-container1'
+                active: 'tab-container1',
+                showTool: !1,
+                info: {},
+                slideData: [{
+                    "imgPath": "/images/default.jpg",
+                    "url": "javascript:;"
+                }] //焦点图数据
             }
         },
-        mounted() {
-            console.log(this.$route.params.productId, this.$route.params.enterpriseId)
+        created() {
+            this.getDetail(this.$route.params.productId, this.$route.params.enterpriseId);
         },
-        components: {}
+        methods: {
+            getDetail(productId, enterpriseId) {
+                getProductDetail(this, {
+                    productId: productId,
+                    enterpriseId: enterpriseId
+                }).then((response) => {
+                    var data = response.body.data;
+                    this.info = data;
+                    //console.log(response.body)
+                    if (data.picList.length) {
+                        this.slideData = data.picList;
+                    }
+                }, (error) => {
+                    Toast({
+                        message: error,
+                        position: 'bottom',
+                        duration: 2000
+                    });
+                });
+            }
+        },
+        filters: {
+            price(x) {
+                var f = parseFloat(x);
+                if (isNaN(f)) {
+                    return false;
+                }
+                var f = Math.round(x * 100) / 100;
+                var s = f.toString();
+                var rs = s.indexOf('.');
+                if (rs < 0) {
+                    rs = s.length;
+                    s += '.';
+                }
+                while (s.length <= rs + 2) {
+                    s += '0';
+                }
+                return s;
+
+            }
+        },
+        components: {
+            slides
+        }
     }
 </script>
 
 <style lang="less" scoped>
     @size : 37.5rem;
+    .noData {
+        text-align: center;
+        padding-top: 40/@size;
+        color: #bbb;
+    }
+    
+    body {
+        background-color: #f8f8f8;
+    }
+    
+    .info {
+        padding-top: 41/@size;
+    }
+    
+    .slide-box {
+        height: 440/@size;
+    }
+    
     .info- {
         &header {
             position: fixed;
             top: 0;
             right: 0;
             left: 0;
+            z-index: 99;
             height: 40/@size;
             border-bottom: solid 1px #ebedec;
             background-color: #fff;
-            .cont{
+            .cont {
                 width: 100%;
                 height: 100%;
                 position: relative;
-                .head_goback{
+                text-align: center;
+                .head_goback {
                     position: absolute;
                     left: 0;
                     top: 0;
                     bottom: 0;
-                    width: 15/@size;
+                    width: 45/@size;
                     padding: 0 15/@size;
+                    .icon {
+                        font-size: 26/@size;
+                        height: 40/@size;
+                    }
+                }
+            }
+        }
+        &tabs {
+            display: inline-block;
+            height: 40/@size;
+            line-height: 40/@size;
+            li {
+                float: left;
+                padding: 0 8/@size;
+                height: 38/@size;
+                line-height: 38/@size;
+                &.actived {
+                    color: #e60012;
+                    border-bottom: 2/@size #e60012 solid;
+                }
+            }
+        }
+        &handle {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 60/@size;
+            padding: 0 15px/@size;
+            height: 40/@size;
+            .dottle {
+                width: 30/@size;
+                margin-left: 15/@size;
+                position: relative;
+                span {
+                    margin: 18/@size 3/@size;
+                    float: left;
+                    display: block;
+                    width: 4/@size;
+                    height: 4/@size;
+                    border-radius: 50%;
+                    background-color: #505050;
+                }
+                .toggle-tool {
+                    position: absolute;
+                    top: 48/@size;
+                    right: -5/@size;
+                    background-color: #fff;
+                    width: 93/@size;
+                    height: 84/@size;
+                    background: #fafafa;
+                    box-shadow: 0px 5/@size 10/@size 0px rgba(0, 0, 0, 0.20);
+                    border-radius: 3px;
+                    z-index: 1000;
+                    transition: all 0.5s;
+                    .cont {
+                        position: relative;
+                        i {
+                            position: absolute;
+                            top: -8/@size;
+                            right: 8/@size;
+                            width: 0;
+                            height: 0;
+                            border-bottom: 10/@size solid #fafafa;
+                            border-left: 10/@size solid transparent;
+                            border-right: 10/@size solid transparent;
+                        }
+                        a {
+                            float: left;
+                            display: block;
+                            font-size: 12/@size;
+                            width: 100%;
+                            height: 40/@size;
+                            border-bottom: 2/@size solid #f7f7f7;
+                            color: #030303;
+                            line-height: 12/@size;
+                            text-align: center;
+                            line-height: 40/@size;
+                            letter-spacing: 1px;
+                            vertical-align: middle;
+                            .icon {
+                                display: inline-block;
+                                color: #8f8e93;
+                                font-size: 18/@size;
+                            }
+                            p {
+                                display: inline-block;
+                                padding-left: 4/@size;
+                            }
+                        }
+                    }
                 }
             }
         }
     }
+    .product_name{
+  margin-bottom: 16/@size;
+  font-size: 14/@size;
+  font-weight: 400;
+}
+.point{
+  color: #999999;
+  font-size: 12/@size;
+}
+    .info_list {
+        margin-bottom: 5/@size;
+        background-color: #fff;
+        .info_cont {
+            position: relative;
+            padding: 10/@size;
+            border-bottom: 1px solid #EEE;
+            h4 {
+                margin-bottom: 8/@size;
+                font-size: 15/@size;
+                color: #333333;
+                line-height: 20/@size;
+                font-weight: 400;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display: -webkit-box;
+                -webkit-box-orient: vertical;
+                -webkit-line-clamp: 2;
+            }
+        }
+        .item {
+            position: relative;
+            padding-left: 15/@size;
+            margin-right: 15/@size;
+            min-height: 43/@size;
+            line-height: 43/@size;
+            font-size: 13/@size;
+            color: #333;
+        }
+        .info_last_list {
+            margin-bottom: 117/@size;
+        }
+        .btn_look {
+            display: inline-block;
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 73/@size;
+            height: 25/@size;
+            line-height: 21/@size;
+            font-size: 11/@size;
+            text-align: center;
+            border: 1px solid #FE403B;
+            border-radius: 2px;
+            color: #FE403B;
+            &:after {
+                display: inline-block;
+                content: "";
+                height: 9px;
+                width: 5px;
+                line-height: 28/@size;
+                margin-left: 4px;
+                background: url(../../images/product/icon_right.png) center/contain no-repeat;
+                color: #FE403B;
+            }
+        }
+        li {
+            overflow: auto;
+            border-bottom: .5px solid #EEEEEE;
+            .name {
+                display: inline-block;
+                width: 35%;
+                color: #8F8E94;
+                float: left;
+            }
+            .value {
+                float: left;
+                width: 65%;
+                min-height: 43/@size;
+            }
+        }
+        .item_title {
+            margin-left: 15/@size;
+            padding-left: 0;
+            border-bottom: .5px solid #EEEEEE;
+        }
+    }
+    
+    .price {
+        overflow: hidden;
+        .new {
+            font-size: 20/@size;
+            color: #FE403B;
+            i {
+                font-size: 12/@size;
+            }
+        }
+        .old {
+            font-size: 11/@size;
+            color: #999999;
+            text-decoration: line-through;
+        }
+        .sale_type_tj,
+        .sale_type_mz,
+        .sale_type_mj {
+            display: inline-block;
+        }
+        p{
+            float: left;
+        }
+        .sale_limmit_num {
+            color: #666;
+            float: right;
+            padding-top: 6/@size;
+            font-size: 11/@size;
+        }
+    }
+    
+    .sale_type_tj,
+    .sale_type_mz,
+    .sale_type_mj {
+        position: relative;
+        width: 30/@size;
+        display: inline-block;
+        height: 14/@size;
+        color: #fff;
+        text-align: center;
+        border-radius: 2px;
+        font-weight: 100;
+    }
+    
+    .sale_active_type {
+        height: 14/@size;
+    }
+    
+    .sale_type_tj:before,
+    .sale_type_mz:before,
+    .sale_type_mj:before {
+        content: attr(data-type);
+        text-align: center;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 30/@size;
+        height: 14/@size;
+        font-size: 10/@size;
+        line-height: 16/@size;
+    }
+    
+    .sale_type {
+        &_tj {
+            background-image: linear-gradient(90deg;
+            #80DEEA, #41CBDB);
+        }
+        &_mz {
+            background-image: linear-gradient(90deg;
+            #FFC470, #FFB54C);
+        }
+        &_mj {
+            background-image: linear-gradient(90deg;
+            #FFA083, #FF7E56);
+        }
+    }
+    
+    .sale_active_type {
+        padding: 4/@size 0 2/@size;
+        span {
+            font-weight: normal;
+            display: inline-block;
+        }
+    }
+     .product_rights {
+    margin-bottom: 62/@size;
+    dd.item {
+      margin-left: 15/@size;
+    }
+    .main {
+      padding-left: 10/@size;
+    }
+    .explain {
+      padding-left: 5/@size;
+      color: #8F8E94;
+      font-size: 11/@size;
+    }
+  .certified {
+    background: url("../../images/product/icon_certified.png") left no-repeat;
+    background-size: 20/@size;
+  }
+  .service {
+    background: url("../../images/product/icon_service.png") left no-repeat;
+    background-size: 20/@size;
+  }
+  .terrace {
+    background: url("../../images/product/icon_terrace.png") left no-repeat;
+    background-size: 20/@size;
+  }
+}
+    .product_instr{
+  section{
+    background-color: #fff;
+  }
+  ul.product_ext_info{
+    margin-bottom: 127/@size;
+    background-color: #f4f4f4;
+  }
+  ul.product_ext_info.product_ext_change{
+    margin-bottom: 70/@size;
+  }
+        .product_header{
+  padding: 22/@size 0;
+  text-align: center;
+}
+  .product_ext_info{
+    box-sizing: border-box;
+    .type {
+      text-indent: 10/@size;
+      padding-left: 0;
+        font-size: 13/@size;
+      line-height: 37/@size;
+      color: #000;
+      &:after {
+        display: block;
+        content: "";
+        height: 1px;
+        width: 100%;
+        background-color: #ebedec;
+      }
+    }
+    dl{
+      padding: 0 10/@size;
+    }
+    dd.detail{
+      line-height: 30/@size;
+      .name{
+        margin-left: 40/@size;
+      }
+    }
+    .detail {
+      padding: 10/@size 0 10/@size 10/@size;
+      font-size: 12/@size;
+      color: #666666;
+    }
+    li{
+      padding: 10/@size 10/@size 0;
+      background-color: #fff;
+    }
+  }
+}
 </style>
