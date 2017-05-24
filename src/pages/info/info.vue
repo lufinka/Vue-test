@@ -345,10 +345,12 @@
     import {
         Toast,
         TabContainer,
+        MessageBox,
         TabContainerItem,
     } from 'mint-ui';
     import {
         cartAccount,
+        applyChannelapi,
         getProductDetail
     } from '@/service/getDate';
     import slides from '@/components/slide';
@@ -364,7 +366,7 @@
                 target: [], //到货通知
                 info: {},
                 count: 0,
-                shopCar_count: 10, //购物车数量
+                shopCar_count: 0, //购物车数量
                 slideData: [{
                     "imgPath": "/images/default.jpg",
                     "url": "javascript:;"
@@ -395,7 +397,11 @@
                     "promotionId": this.info.mPromotionId,
                     "promotionCollectionId": this.info.mPromotionCollectionId,
                     "manufactures": this.info.factoryName,
-                    "specification": this.info.spec
+                    "specification": this.info.spec,
+                    "productSpec": this.info.unit,
+                    "promotionlimitNum": this.info.productPromotion.limitNum || '',
+                    "inventory": this.info.stockCount,
+                    "inimumPacking": this.info.productPromotion.minimumPacking
                 };
                 this.addCartarget = obj;
                 this.$refs.addscar.ishow = !0;
@@ -420,14 +426,10 @@
                 });
             },
             addChannel: function() {
-                var data = JSON.stringify({
-                    spuCode: this.special.productCode,
-                    sellerCode: this.special.productSupplyId
-                });
                 MessageBox.confirm('确定加入渠道?').then(action => {
                     applyChannelapi(this, {
-                        spuCode: this.special.productCode,
-                        sellerCode: this.special.productSupplyId
+                        spuCode: this.info.productId,
+                        sellerCode: this.info.vendorId
                     }).then(action => {
                         if (action.body.statusCode == 0) {
                             this.special.statusDesc = '-4';
