@@ -54,7 +54,7 @@
                         <div class="price" v-if="info.statusDesc == 0 || info.statusDesc == -5">
                             <p v-if="info.statusDesc != -5 && info.productPromotion && info.productPromotion.promotionId != 0">
                                 <span class="new"><i>￥</i>{{info.productPromotion.promotionPrice | price}}</span>
-                                <span class="old">￥{{info.productPrice | price:''}}</span>
+                                <span class="old">￥{{info.productPrice | price}}</span>
                                 <span v-if="info.productPromotion" class="sale_type_tj" data-type="特价"></span>
                                 <span v-else class="new"><i>￥</i>{{info.productPrice | price}}</span>
                             </p>
@@ -296,83 +296,45 @@
             </div>
     </mt-tab-container-item>
     </mt-tab-container>
-    <ul class="icon_lists clear">
-
-        <li>
-            <svg class="icon" aria-hidden="true">
-                        <use xlink:href="#icon-home"></use>
-                    </svg>
-            <div class="name">home</div>
-            <div class="fontclass">#icon-home</div>
-        </li>
-
-        <li>
-            <svg class="icon" aria-hidden="true">
+    <div class="add_container">
+       <div class="add_footer table">
+           <div class="cell">
+             <router-link v-if="info.vendorId==8353" class="shop_page" to="/shop" >
+              <svg class="icon" aria-hidden="true">
                         <use xlink:href="#icon-shop"></use>
                     </svg>
-            <div class="name">shop</div>
-            <div class="fontclass">#icon-shop</div>
-        </li>
-
-        <li>
-            <svg class="icon" aria-hidden="true">
-                        <use xlink:href="#icon-fanhui"></use>
+               <p>店铺</p>
+               </router-link>
+               <router-link v-else to="/shop"  class="shop_page">
+              <svg class="icon" aria-hidden="true">
+                        <use xlink:href="#icon-shop"></use>
                     </svg>
-            <div class="name">返回</div>
-            <div class="fontclass">#icon-fanhui</div>
-        </li>
-
-        <li>
-            <svg class="icon" aria-hidden="true">
-                        <use xlink:href="#icon-searchlist"></use>
-                    </svg>
-            <div class="name">search_list</div>
-            <div class="fontclass">#icon-searchlist</div>
-        </li>
-
-        <li>
-            <svg class="icon" aria-hidden="true">
+               <p>店铺</p>
+               </router-link>
+           </div>
+           <div class="cell">
+              <router-link to="/shopCar" class="car_num">
+               <svg class="icon" aria-hidden="true">
                         <use xlink:href="#icon-shopcar"></use>
-                    </svg>
-            <div class="name">shopcar</div>
-            <div class="fontclass">#icon-shopcar</div>
-        </li>
-
-    </ul>
-    <div class="add_container">
-            <p class="add_footer">
-                <a v-if="info.vendorId==8353" href="selfstores.html?enterpriseId=8353"><span class="footer_icon store">店铺</span></a>
-                <a v-else :href="'shop.html?enterpriseId='+info.vendorId"><span class="footer_icon store">店铺</span></a>
-                <router-link to="/shopCar" class="footer_icon shop_car">
-                    <i class="shop_count">0</i>
-                </router-link>
-                <button  v-if="info.statusDesc == 0" @click.stop.prevent="addShopCar" class="btn_product_public btn_add_list">去抢购</button>
-                <router-link v-else-if="info.statusDesc == -1" to="login" class="btn btn_login">登录</router-link>
+               </svg>
+               <i class="shop_count" :style=" {display: shopCar_count>0?'inline-block':'none'}">{{shopCar_count}}</i>
+               <p>购物车</p>
+               </router-link>
+           </div>
+           <div class="cell btn_counm">
+               <button  v-if="info.statusDesc == 0" @click.stop.prevent="addShopCar" class="btn_product_public btn_add_list">去抢购</button>
+                <router-link v-else-if="info.statusDesc == -1" to="/login" class="btn_product_public">登录</router-link>
                 <button v-else-if="info.statusDesc == -2" class="btn_product_public btn_add_channel" @click.stop.prevent="addChannel">加入渠道</button>
                 <button v-else-if="info.statusDesc == -3" class="btn_product_off btn_check_qualification" @click.stop.prevent>资质未认证</button>
                 <button v-else-if="info.statusDesc == -4" class="btn_product_off" @click.stop.prevent>渠道待审核</button>
                 <button v-else-if="info.statusDesc == -5" class="btn_product_off btn_lack" @click.stop.prevent="notice">到货通知</button>
                 <button v-else-if="info.statusDesc == -6" class="btn_product_off" @click.stop.prevent>不可购买</button>
-                <button v-else-if="info.statusDesc == -7" class="btn_warning btn" @click.stop.prevent>已下架</button>
-            </p>
-            <div class="product_buy">
-                <p>
-                    <i class="btn_reduce_number left"></i>
-                    <input type="number" name="number" class="product_number"  />
-                    <i class="btn_add_number btn_add_number_ok right"></i>
-                </p>
-                <p class="product_buy_info">
-                    <span class="left">库存</span>
-                    <span class="right js_stock"></span>
-                </p>
-                <p class="product_buy_info">
-                    <span class="left">最小可拆零包装</span>
-                    <span class="right js_min" ></span>
-                </p>
-                <p class="error_msg"></p>
-                <a href="javascript:" class="btn_next_ok js_add_list">加入进货单</a>
-            </div>
+                <button v-else-if="info.statusDesc == -7" class="btn_product_off" @click.stop.prevent>已下架</button>
+           </div>
+       </div>
         </div>
+        <add-shop-car :target="addCartarget" ref="addscar"></add-shop-car>
+        <notice :target="target"></notice>
 </div>
 <div v-else class="noData">
     <p>无该商品信息</p>
@@ -386,15 +348,23 @@
         TabContainerItem,
     } from 'mint-ui';
     import {
+        cartAccount,
         getProductDetail
     } from '@/service/getDate';
     import slides from '@/components/slide';
+    import notice from '@/components/notice';
+    import addShopCar from '@/components/addShopCar';
+    import * as tool from '@/service/tool';
     export default {
         data() {
             return {
                 active: 'tab-container1',
                 showTool: !1,
+                addCartarget: {}, //加入购物车对象
+                target: [], //到货通知
                 info: {},
+                count: 0,
+                shopCar_count: 10, //购物车数量
                 slideData: [{
                     "imgPath": "/images/default.jpg",
                     "url": "javascript:;"
@@ -403,8 +373,33 @@
         },
         created() {
             this.getDetail(this.$route.params.productId, this.$route.params.enterpriseId);
+            this.getsShopcarNum();
         },
         methods: {
+            noticeEvent() {
+                var obj = {
+                    "spuCode": this.info.spuCode,
+                    "sellerCode": this.info.vendorId * 1,
+                };
+                this.target.push(obj);
+            },
+            addShopCar() {
+                var obj = {
+                    "productCodeCompany": this.info.productCodeCompany,
+                    "spuCode": this.info.spuCode,
+                    "productId": this.info.productId,
+                    "productCount": this.count,
+                    "productPrice": this.info.productPrice,
+                    "supplyId": this.info.vendorId,
+                    "productName": this.info.productName,
+                    "promotionId": this.info.mPromotionId,
+                    "promotionCollectionId": this.info.mPromotionCollectionId,
+                    "manufactures": this.info.factoryName,
+                    "specification": this.info.spec
+                };
+                this.addCartarget = obj;
+                this.$refs.addscar.ishow = !0;
+            },
             getDetail(productId, enterpriseId) {
                 getProductDetail(this, {
                     productId: productId,
@@ -423,7 +418,47 @@
                         duration: 2000
                     });
                 });
-            }
+            },
+            addChannel: function() {
+                var data = JSON.stringify({
+                    spuCode: this.special.productCode,
+                    sellerCode: this.special.productSupplyId
+                });
+                MessageBox.confirm('确定加入渠道?').then(action => {
+                    applyChannelapi(this, {
+                        spuCode: this.special.productCode,
+                        sellerCode: this.special.productSupplyId
+                    }).then(action => {
+                        if (action.body.statusCode == 0) {
+                            this.special.statusDesc = '-4';
+                        }
+                        Toast({
+                            message: action.body.message,
+                            position: 'bottom',
+                            duration: 2000
+                        });
+                    }, error => {
+                        console.log(error)
+                        Toast({
+                            message: error,
+                            position: 'bottom',
+                            duration: 2000
+                        });
+                    })
+                }, cancel => {});
+            },
+            getsShopcarNum(){
+            if (!tool.getLocalStorage("token")) return false;
+            cartAccount(this).then((response) => {
+                this.shopCar_count = response.body.data.count;
+                }, (error) => {
+                    Toast({
+                        message: error,
+                        position: 'bottom',
+                        duration: 2000
+                    });
+                });
+        }
         },
         filters: {
             price(x) {
@@ -446,13 +481,87 @@
             }
         },
         components: {
-            slides
+            slides,
+            notice,
+            addShopCar
         }
     }
 </script>
 
 <style lang="less" scoped>
     @size : 37.5rem;
+    .table {
+        display: table
+    }
+    
+    .cell {
+        display: table-cell;
+        vertical-align: middle;
+    }
+    
+    .add_container {
+        box-shadow: 0 0 5px rgba(0, 0, 0, .3);
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        box-sizing: border-box;
+        height: 54/@size;
+        padding: 0 9/@size;
+        background-color: #fff;
+        z-index: 3;
+        .shop_page,
+        .car_num {
+            display: block;
+            height: 54/@size;
+            padding: 9/@size 0;
+            font-size: 11/@size;
+            position: relative;
+            .shop_count {
+                position: absolute;
+                height: 16/@size;
+                line-height: 17/@size;
+                left: 50%;
+                top: 4/@size;
+                background: red;
+                padding: 0 2/@size;
+                color: #fff;
+                text-align: center;
+                font-size: 12/@size;
+                border-radius: 15/@size;
+                letter-spacing: 1px;
+                display: none;
+            }
+            .icon {
+                font-size: 20/@size;
+            }
+        }
+        .add_footer {
+            text-align: center;
+            width: 100%;
+            .btn_counm {
+                width: 218/@size;
+            }
+        }
+        .btn_product_off,
+        .btn_product_public {
+            display: inline-block;
+            text-align: center;
+            width: 218/@size;
+            height: 35/@size;
+            line-height: 35/@size;
+            font-size: 15/@size;
+            background-image: linear-gradient(-180deg, #FF5B3B 0%, #FE403B 100%);
+            box-shadow: 0 2px 8px 0 rgba(254, 64, 59, 0.50);
+            border-radius: 4px;
+            color: #FFFFFF;
+        }
+        .btn_product_off {
+            background-image: linear-gradient(-180deg, #CAC8C8 0%, #A19F9F 100%);
+            box-shadow: 0px 2px 8px 0px rgba(120, 111, 111, 0.50);
+        }
+    }
+    
     .noData {
         text-align: center;
         padding-top: 40/@size;
@@ -587,21 +696,25 @@
             }
         }
     }
-    .product_name{
-  margin-bottom: 16/@size;
-  font-size: 14/@size;
-  font-weight: 400;
-}
-.point{
-  color: #999999;
-  font-size: 12/@size;
-}
-    .product_intro_img{
-    padding-bottom: 60/@size;
-    img{
-        width: 100%;
+    
+    .product_name {
+        margin-bottom: 16/@size;
+        font-size: 14/@size;
+        font-weight: 400;
     }
-}
+    
+    .point {
+        color: #999999;
+        font-size: 12/@size;
+    }
+    
+    .product_intro_img {
+        padding-bottom: 60/@size;
+        img {
+            width: 100%;
+        }
+    }
+    
     .info_list {
         margin-bottom: 5/@size;
         background-color: #fff;
@@ -700,7 +813,7 @@
         .sale_type_mj {
             display: inline-block;
         }
-        p{
+        p {
             float: left;
         }
         .sale_limmit_num {
@@ -764,139 +877,83 @@
             display: inline-block;
         }
     }
-     .product_rights {
-    margin-bottom: 62/@size;
-    dd.item {
-      margin-left: 15/@size;
-    }
-    .main {
-      padding-left: 10/@size;
-    }
-    .explain {
-      padding-left: 5/@size;
-      color: #8F8E94;
-      font-size: 11/@size;
-    }
-  .certified {
-    background: url("../../images/product/icon_certified.png") left no-repeat;
-    background-size: 20/@size;
-  }
-  .service {
-    background: url("../../images/product/icon_service.png") left no-repeat;
-    background-size: 20/@size;
-  }
-  .terrace {
-    background: url("../../images/product/icon_terrace.png") left no-repeat;
-    background-size: 20/@size;
-  }
-}
-    .product_instr{
-  section{
-    background-color: #fff;
-  }
-  ul.product_ext_info{
-    margin-bottom: 127/@size;
-    background-color: #f4f4f4;
-  }
-  ul.product_ext_info.product_ext_change{
-    margin-bottom: 70/@size;
-  }
-        .product_header{
-  padding: 22/@size 0;
-  text-align: center;
-}
-  .product_ext_info{
-    box-sizing: border-box;
-    .type {
-      text-indent: 10/@size;
-      padding-left: 0;
-        font-size: 13/@size;
-      line-height: 37/@size;
-      color: #000;
-      &:after {
-        display: block;
-        content: "";
-        height: 1px;
-        width: 100%;
-        background-color: #ebedec;
-      }
-    }
-    dl{
-      padding: 0 10/@size;
-    }
-    dd.detail{
-      line-height: 30/@size;
-      .name{
-        margin-left: 40/@size;
-      }
-    }
-    .detail {
-      padding: 10/@size 0 10/@size 10/@size;
-      font-size: 12/@size;
-      color: #666666;
-    }
-    li{
-      padding: 10/@size 10/@size 0;
-      background-color: #fff;
-    }
-  }
-}
     
-    .add_container{
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  box-sizing: border-box;
-  height: 60/@size;
-  padding: 9/@size 0;
-  background-color: #fff;
-  z-index: 3;
-  .footer_icon{
-    display: inline-block;
-    box-sizing: border-box;
-    position: absolute;
-    top:50%;
-    transform:translateY(-50%);
-    font-size: 11/@size;
-    padding-top: 19/@size;
-    color: #8F8E94;
-  }
-  .store{
-    left:0 ;
-    background: url("../../images/product/icon_store.png") top no-repeat;
-    background-size: 15/@size 15/@size;
-  }
-  .shop_car{
-    left: 59/@size;
-    background: url("../../images/icon_shopcar.png") top no-repeat;
-    background-size: 15/@size 15/@size;
-  }
-  .add_footer{
-    position: relative;
-    margin: 0 10/@size 0 25/@size;
-    height: 100%;
-  }
-  .btn_product_off,.btn_product_public{
-    display: inline-block;
-    position: absolute;
-    margin:0;
-    top:50%;
-    right:0 ;
-    transform:translateY(-50%);
-    text-align: center;
-      width: 218/@size;
-      height: 35/@size;
-      line-height: 35/@size;
-      font-size: 15/@size;
-    background-image: linear-gradient(-180deg, #FF5B3B 0%, #FE403B 100%);
-    box-shadow: 0 2px 8px 0 rgba(254,64,59,0.50);
-    border-radius: 4px;
-    color: #FFFFFF;
-  }
-  .btn_product_off{
-    background-image: linear-gradient(-180deg, #CAC8C8 0%, #A19F9F 100%);
-    box-shadow: 0px 2px 8px 0px rgba(120,111,111,0.50);
-  }
-}
+    .product_rights {
+        margin-bottom: 62/@size;
+        dd.item {
+            margin-left: 15/@size;
+        }
+        .main {
+            padding-left: 10/@size;
+        }
+        .explain {
+            padding-left: 5/@size;
+            color: #8F8E94;
+            font-size: 11/@size;
+        }
+        .certified {
+            background: url("../../images/product/icon_certified.png") left no-repeat;
+            background-size: 20/@size;
+        }
+        .service {
+            background: url("../../images/product/icon_service.png") left no-repeat;
+            background-size: 20/@size;
+        }
+        .terrace {
+            background: url("../../images/product/icon_terrace.png") left no-repeat;
+            background-size: 20/@size;
+        }
+    }
+    
+    .product_instr {
+        section {
+            background-color: #fff;
+        }
+        ul.product_ext_info {
+            margin-bottom: 127/@size;
+            background-color: #f4f4f4;
+        }
+        ul.product_ext_info.product_ext_change {
+            margin-bottom: 70/@size;
+        }
+        .product_header {
+            padding: 22/@size 0;
+            text-align: center;
+        }
+        .product_ext_info {
+            box-sizing: border-box;
+            .type {
+                text-indent: 10/@size;
+                padding-left: 0;
+                font-size: 13/@size;
+                line-height: 37/@size;
+                color: #000;
+                &:after {
+                    display: block;
+                    content: "";
+                    height: 1px;
+                    width: 100%;
+                    background-color: #ebedec;
+                }
+            }
+            dl {
+                padding: 0 10/@size;
+            }
+            dd.detail {
+                line-height: 30/@size;
+                .name {
+                    margin-left: 40/@size;
+                }
+            }
+            .detail {
+                padding: 10/@size 0 10/@size 10/@size;
+                font-size: 12/@size;
+                color: #666666;
+            }
+            li {
+                padding: 10/@size 10/@size 0;
+                background-color: #fff;
+            }
+        }
+    }
 </style>

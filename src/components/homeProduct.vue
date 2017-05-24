@@ -1,6 +1,6 @@
 <template>
     <div class="product-wrapper">
-     <router-link :to="'info/'+special.productId+'/'+special.productSupplyId">
+     <router-link :to="'info/'+special.productCode+'/'+special.productSupplyId">
         <div class="product-photo"><img v-lazy="special.imgPath" alt=""></div>
         <div class="product-text">
             <h2>{{special.productSupplyName}}&nbsp;{{special.productSpec}}</h2>
