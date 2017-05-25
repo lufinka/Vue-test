@@ -82,6 +82,7 @@
                 this.count = 0;
             },
             add: function() {
+                console.log(this.target.inimumPacking)
                 this.count = parseInt(this.count);
                 this.count += parseInt(this.target.inimumPacking);
             },

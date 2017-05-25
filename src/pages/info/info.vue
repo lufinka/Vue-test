@@ -399,9 +399,9 @@
                     "manufactures": this.info.factoryName,
                     "specification": this.info.spec,
                     "productSpec": this.info.unit,
-                    "promotionlimitNum": this.info.productPromotion.limitNum || '',
                     "inventory": this.info.stockCount,
-                    "inimumPacking": this.info.productPromotion.minimumPacking
+                    "promotionlimitNum": this.info.productPromotion ? this.info.productPromotion.limitNum : '',
+                    "inimumPacking": this.info.productPromotion ? this.info.productPromotion.minimumPacking : this.info.stepCount
                 };
                 this.addCartarget = obj;
                 this.$refs.addscar.ishow = !0;
