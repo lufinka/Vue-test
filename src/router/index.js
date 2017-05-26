@@ -105,15 +105,15 @@ export default new Router({
             name: 'index',
             component: index,
             children: [{
-                path: '/a',
+                path: 'a',
                 name: 'a',
                 component: a
             }, {
-                path: '/b',
+                path: 'b',
                 name: 'b',
                 component: b
             }, {
-                path: '/c',
+                path: 'c',
                 name: 'c',
                 component: c
             }]

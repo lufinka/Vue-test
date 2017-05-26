@@ -1,4 +1,5 @@
 <template>
+<div v-if="ready">
 <div class="info" v-if="info.productName && info.productId">
     <div class="info-header">
         <div class="cont">
@@ -48,9 +49,7 @@
             <section class="info_list">
                 <div class="info_cont">
                     <section>
-                        <p>
-                            <h4>{{info.productName}}&nbsp;&nbsp;{{info.spec}}</h4>
-                        </p>
+                        <h4 @click="increment">{{info.productName}}&nbsp;&nbsp;{{info.spec}}</h4>
                         <div class="price" v-if="info.statusDesc == 0 || info.statusDesc == -5">
                             <p v-if="info.statusDesc != -5 && info.productPromotion && info.productPromotion.promotionId != 0">
                                 <span class="new"><i>￥</i>{{info.productPromotion.promotionPrice | price}}</span>
@@ -339,6 +338,7 @@
 <div v-else class="noData">
     <p>无该商品信息</p>
 </div>
+</div>
 </template>
 
 <script>
@@ -346,6 +346,7 @@
         Toast,
         TabContainer,
         MessageBox,
+        Indicator,
         TabContainerItem,
     } from 'mint-ui';
     import {
@@ -365,6 +366,7 @@
                 addCartarget: {}, //加入购物车对象
                 target: [], //到货通知
                 info: {},
+                ready:!1,
                 count: 0,
                 shopCar_count: 0, //购物车数量
                 slideData: [{
@@ -374,6 +376,7 @@
             }
         },
         created() {
+            Indicator.open();
             this.getDetail(this.$route.params.productId, this.$route.params.enterpriseId);
             this.getsShopcarNum();
         },
@@ -411,6 +414,8 @@
                     productId: productId,
                     enterpriseId: enterpriseId
                 }).then((response) => {
+                    this.ready = !0;
+                    Indicator.close();
                     var data = response.body.data;
                     this.info = data;
                     //console.log(response.body)
@@ -418,6 +423,8 @@
                         this.slideData = data.picList;
                     }
                 }, (error) => {
+                    this.ready = !0;
+                    Indicator.close();
                     Toast({
                         message: error,
                         position: 'bottom',
@@ -522,6 +529,7 @@
             .shop_count {
                 position: absolute;
                 height: 16/@size;
+                min-width: 16/@size;
                 line-height: 17/@size;
                 left: 50%;
                 top: 4/@size;
