@@ -1,7 +1,7 @@
 <template>
     <div class="slide-wrapper">
         <mt-swipe :auto="4000" continuous>
-          <mt-swipe-item v-for="(item, index) in slideData" :key="index"><a :href="item.url"><img :alt="item.name"  v-lazy="item.imgPath" ></a></mt-swipe-item>
+          <mt-swipe-item v-for="(item, index) in slideData" :key="index"><a :href="item.url"><img :alt="item.name"  v-lazy="item.imgPath || item" ></a></mt-swipe-item>
         </mt-swipe>
     </div>
 </template>

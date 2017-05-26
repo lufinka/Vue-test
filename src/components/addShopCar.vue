@@ -14,7 +14,7 @@
         <p class="product_buy_info">
             <span class="left" v-if="target.promotionlimitNum == 0">库存</span>
             <span class="left" v-else="target.promotionlimitNum == 0">库存:</span>
-            <span :class="{left: target.promotionlimitNum > 0,right:!target.promotionlimitNum,js_stock:true}">{{target.inventory}}</span>
+            <span :class="{left: target.promotionlimitNum > 0,right:!target.promotionlimitNum || target.promotionlimitNum < 0,js_stock:true}">{{target.inventory}}</span>
             <span class="right js_stock" v-if="target.promotionlimitNum > 0">{{target.promotionlimitNum}}</span>
             <span class="right" v-if="target.promotionlimitNum > 0">限购:</span>
         </p>

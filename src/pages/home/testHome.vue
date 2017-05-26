@@ -10,21 +10,21 @@
       <div class="listAll">全部</div>
       </div>
       <mt-tab-container v-model="active" swipeable>
-      <mt-tab-container-item  v-for="(item,index) in promotionList" :key="index" :id="'tab-container'+(index+1)">
+      <mt-tab-container-item  v-for="(item,indexNum) in promotionList" :key="indexNum" :id="'tab-container'+(indexNum+1)">
       <div class="promotion-cont" ref="wrapper" :style="{ height: wrapperHeight + 'px' }">
-        <mt-loadmore :bottom-method="loadBottom" :auto-fill="isfill"  @bottom-status-change="handleBottomChange" :bottom-all-loaded="allLoaded[index]" ref="loadmore">
+        <mt-loadmore :bottom-method="loadBottom" :auto-fill="isfill"  @bottom-status-change="handleBottomChange" :bottom-all-loaded="allLoaded[indexNum]" ref="loadmore">
          <ul>
              <li v-for="(p,index) in item" :key="index">
-                  <testProduct :special="p" :sysTime="sysTime"  ref="product"></testProduct>
+                  <testProduct :special="p" :inow="indexNum" :sysTime="sysTime"  ref="product"></testProduct>
              </li>
          </ul>
          <div slot="bottom" class="mint-loadmore-bottom">
-          <span v-show="bottomStatus[index] !== 'loading'" :class="{ 'is-rotate': bottomStatus[index] === 'drop' }">↑</span>
-          <span v-show="bottomStatus[index] === 'loading'">
+          <span v-show="bottomStatus[indexNum] !== 'loading'" :class="{ 'is-rotate': bottomStatus[indexNum] === 'drop' }">↑</span>
+          <span v-show="bottomStatus[indexNum] === 'loading'">
             <mt-spinner type="snake"></mt-spinner>
           </span>
         </div>
-        <div class="promotion-cont empty"  v-if="empty[index]">
+        <div class="promotion-cont empty"  v-if="empty[indexNum]">
               <p>暂无数据</p>
           </div>
       </mt-loadmore>
@@ -145,12 +145,10 @@
                         }
                         for (var i = 0; i < response.body.data.dataList.length; i++) {
                             this.promotionList[num].push(response.body.data.dataList[i]);
-                            this.promotionList[num][i].type = this.promotionType;
                             this.sysTime = response.body.data.sysTime;
                         }
                         let lastValue = this.promotionList[num].length;
                         if (lastValue >= this.limmit[num]) {
-                            console.log(lastValue, this.limmit[num])
                             this.allLoaded[num] = !0;
                         }
                     }
@@ -216,7 +214,12 @@
             background-color: #fff;
         }
         &cont {
-            overflow: scroll;
+            overflow-x: hidden !important;
+            overflow-y: scroll !important;
+            -webkit-overflow-scrolling: touch !important;
+            &::-webkit-scrollbar {
+                display: none;
+            }
         }
         &title {
             width: 100%;

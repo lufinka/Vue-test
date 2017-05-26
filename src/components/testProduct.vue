@@ -1,11 +1,11 @@
 <template>
     <div class="product-wrapper">
     <div class="promotion-title" v-show="special.statusDesc == 0 && (special.productDrug.productPromotion || special.productDrug.productPromotionInfos)">
-        <div class="promotion-info"  v-if="special.type == 4">
+        <div class="promotion-info"  v-if="inow == 0">
            <i>抢</i>
            <p>{{countDown}}</p>
         </div>
-        <div class="promotion-info"  v-if="special.type == 5 && special.productDrug.productPromotionInfos">
+        <div class="promotion-info"  v-else-if="inow == 1 && special.productDrug.productPromotionInfos">
            <i>减</i>
            <p v-for="item in special.productDrug.productPromotionInfos">
             <span v-if="item.promotion_type=='2'||item.promotion_type=='3'">
@@ -13,13 +13,19 @@
             </span>
             </p>
          </div>
-          <div class="promotion-info"  v-if="special.type == 7 && special.productDrug.productPromotionInfos">
+          <div class="promotion-info"  v-else-if="inow == 2">
+          <div v-if="special.productDrug.productPromotionInfos">
            <i>赠</i>
            <p v-for="item in special.productDrug.productPromotionInfos">
             <span v-if="item.promotion_type=='5'||item.promotion_type=='6'||item.promotion_type=='7'||item.promotion_type=='8'">
                 {{item.promotionDesc | limmitNum}}
             </span>
             </p>
+            </div>
+            <div v-else-if="special.productDrug.productPromotion && special.productDrug.productPromotion.end_time">
+               <i>抢</i>
+               <p>{{countDown}}</p>
+            </div>
          </div>
         <div class="saleNumber">销量：{{special.productDrug.sales_total | saleCount}}{{special.productDrug.unit_cn}}</div>
     </div>
@@ -104,6 +110,9 @@
                 type: Object
             },
             sysTime: {
+                type: Number
+            },
+            inow:{
                 type: Number
             }
         },

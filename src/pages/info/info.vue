@@ -49,7 +49,7 @@
             <section class="info_list">
                 <div class="info_cont">
                     <section>
-                        <h4 @click="increment">{{info.productName}}&nbsp;&nbsp;{{info.spec}}</h4>
+                        <h4>{{info.productName}}&nbsp;&nbsp;{{info.spec}}</h4>
                         <div class="price" v-if="info.statusDesc == 0 || info.statusDesc == -5">
                             <p v-if="info.statusDesc != -5 && info.productPromotion && info.productPromotion.promotionId != 0">
                                 <span class="new"><i>￥</i>{{info.productPromotion.promotionPrice | price}}</span>
