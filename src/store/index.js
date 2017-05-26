@@ -12,12 +12,21 @@ const state = {
 const getters = {
     ky(state){
         return state.ky;
+    },
+    username(state){
+        return state.username;
+    },
+    password(state){
+        return state.password;
     }
 }
 
 const mutations = {
     increment(state) {
       state.ky = '123';
+  },setUser(state,username,password) {
+      state.username = username;
+      state.password = password;
   }
 }
 
@@ -26,7 +35,13 @@ const actions = {
 		commit
 	}) => {
 		commit('increment');
+	},
+    setUser: ({
+		commit
+	}) => {
+		commit('setUser');
 	}
+    
 }
 
 const store =  new Vuex.Store({

@@ -1,28 +1,32 @@
 <template>
   <div class="hello"  @keyup.enter="userLogin">
    <div class="base_header ui_into">登录</div>
-   <h1 class="logo"><img src="../..//images/logo.png" alt=""></h1>
+   <h1 class="logo"><img src="../../images/logo.png" alt=""></h1>
    <div class="login_container">
         <div class="afterLine">
-            <input type="text" name="username"  v-model="username" class="login_username" @input="watched" placeholder="用户名" />
-            <i v-show="username" class="btn btn_delete" @click="username = ''"></i>
+            <input type="text" name="username"  v-model="usernameVal" class="login_username" @input="watched" placeholder="用户名" />
+            <i v-show="usernameVal" class="btn btn_delete" @click="usernameVal = ''"></i>
         </div>
         <div class="afterLine">
-            <input v-if="type" type="password" name="password" class="input_password" v-model="password" placeholder="密码" />
-            <input v-else type="text" name="password" class="input_password" v-model="password" placeholder="密码" />
+            <input v-if="type" type="password" name="password" class="input_password" v-model="passwordVal" placeholder="密码" />
+            <input v-else type="text" name="password" class="input_password" v-model="passwordVal" placeholder="密码" />
             <i :class="{btn:true,btn_look:true,look_hide:type}" @click="type = !type" ></i>
         </div>
         <p class="forget_password">
             <span class="login_error">用户名或者密码错误，请重试</span>
             <!--<a href="">忘记密码？</a>-->
         </p>
-        <a href="javascript:;" :class="{btn_next:true,btn_submit:true,btn_next_ok:username.length >=6 && password.length >=6 && namePattern.test(username)}" @click="userLogin">登录</a>
+        <a href="javascript:;" :class="{btn_next:true,btn_submit:true,btn_next_ok:usernameVal.length >=6 && passwordVal.length >=6 && namePattern.test(usernameVal)}" @click="userLogin">登录</a>
         <router-link class="btn_next btn_register" to="/register">注册</router-link>
     </div>
   </div>
 </template>
 
 <script>
+    import {
+        mapGetters,
+        mapActions
+    } from 'vuex'
     import router from '@/router'
     import {
         listIndex,
@@ -40,18 +44,20 @@
         name: 'hello',
         data() {
             return {
-                username: 'testzd',
                 type: true,
-                password: 'q123456',
+                usernameVal: '',
+                passwordVal: '',
                 namePattern: /([a-zA-Z0-9_-]){6,20}$/
             }
         },
-        created() {
-            listIndex(this).then((response) => {
-                         console.log(response)
-                    }, (response) => {
-                        console.log(response)
-                    })
+        computed: mapGetters([
+            'username',
+            'password'
+        ]),
+        mounted() {
+            if (this.username) {
+                router.replace('home');
+            }
         },
         filters: {
             reverse: function(value) {
@@ -59,15 +65,18 @@
             }
         },
         methods: {
+            ...mapActions([
+                'setUser' // 映射 this.increment() 为 this.$store.dispatch('increment')
+            ]),
             watched: function() {
-                console.log(this.namePattern.test(this.username))
+                console.log(this.namePattern.test(this.usernameVal))
             },
             userLogin: function() {
-                if (this.username.length >= 6 && this.password.length >= 6 && this.namePattern.test(this.username)) {
+                if (this.usernameVal.length >= 6 && this.passwordVal.length >= 6 && this.namePattern.test(this.usernameVal)) {
                     this.$http.post(
                         '/passport/api/user/userLogin', {
-                            'username': this.username,
-                            'password': this.password
+                            'username': this.usernameVal,
+                            'password': this.passwordVal
                         }, {
                             headers: headers
                         }
@@ -78,10 +87,11 @@
                             setLocalStorage('city_id', data.station);
                             setLocalStorage('token', data.token);
                             setLocalStorage('result', data.result);
-                            setLocalStorage('username', data.userName);
+                            setLocalStorage('username', data.usernameVal);
                             setLocalStorage('avatarUrl', data.avatarUrl);
                             setLocalStorage('enterpriseName', data.enterpriseName);
                             setLocalStorage('nameList', data.nameList);
+                            this.setUser(this.usernameVal,this.passwordVal);
                             Toast({
                                 message: '登录成功',
                                 position: 'bottom',
