@@ -21,6 +21,7 @@ const addShopCar = r => require.ensure([], () => r(require('@/components/addShop
 const notice = r => require.ensure([], () => r(require('@/components/notice.vue')), 'home');
 const city = r => require.ensure([], () => r(require('@/components/city.vue')), 'home');
 const search = r => require.ensure([], () => r(require('@/components/search.vue')), 'home');
+const error = r => require.ensure([], () => r(require('@/components/error.vue')), 'error');
 
 const a = r => require.ensure([], () => r(require('@/components/a.vue')), 'a');
 const b = r => require.ensure([], () => r(require('@/components/b.vue')), 'b');
@@ -121,6 +122,9 @@ export default new Router({
             path: '/register',
             name: 'register',
             component: register
+            }, {
+            path: '*',
+            component: error
             }]
     }]
 })

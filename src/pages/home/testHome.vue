@@ -134,7 +134,7 @@
                     pageSize: 5
                 }).then((response) => {
                     Indicator.close();
-                    if (response.body.data.dataList.length) {
+                    if (response.body.data && response.body.data.dataList.length) {
                         this.loading = !1;
                         this.limmit[num] = response.body.data.total;
                         if (this.promotionList[num].length >= this.limmit[num]) {
@@ -151,12 +151,19 @@
                         if (lastValue >= this.limmit[num]) {
                             this.allLoaded[num] = !0;
                         }
+                    }else{
+                        this.empty[num] = !0;
+                        Toast({
+                        message: response.body.message,
+                        position: 'bottom',
+                        duration: 2000
+                    });
                     }
                 }, (error) => {
                     Indicator.close();
                     this.loading = !1;
                     Toast({
-                        message: error,
+                        message: error.message,
                         position: 'bottom',
                         duration: 2000
                     });
