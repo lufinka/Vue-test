@@ -357,7 +357,9 @@
     import slides from '@/components/slide';
     import notice from '@/components/notice';
     import addShopCar from '@/components/addShopCar';
-    import * as tool from '@/service/tool';
+    import {
+        getLocalStorage
+    } from '@/service/tool';
     export default {
         data() {
             return {
@@ -457,7 +459,7 @@
                 }, cancel => {});
             },
             getsShopcarNum(){
-            if (!tool.getLocalStorage("token")) return false;
+            if (!getLocalStorage("token")) return false;
             cartAccount(this).then((response) => {
                 this.shopCar_count = response.body.data.count;
                 }, (error) => {

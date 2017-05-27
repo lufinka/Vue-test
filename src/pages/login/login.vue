@@ -95,7 +95,7 @@
                             setLocalStorage('city_id', data.station);
                             setLocalStorage('token', data.token);
                             setLocalStorage('result', data.result);
-                            setLocalStorage('username', data.usernameVal);
+                            setLocalStorage('username', data.userName);
                             setLocalStorage('avatarUrl', data.avatarUrl);
                             setLocalStorage('enterpriseName', data.enterpriseName);
                             setLocalStorage('nameList', data.nameList);
