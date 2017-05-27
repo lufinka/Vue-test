@@ -45,36 +45,36 @@
     <div class="into-list">
         <ul>
             <li>
-               <router-link to="/address" class="address">
-                  <i></i>
+               <router-link to="/address">
+                  <i class="address"></i>
                    <p>收货地址</p>
                    <span></span>
                </router-link>
             </li>
             <li>
                <a href="tel:4009215767">
-                  <i></i>
+                  <i class="kf"></i>
                    <p>联系客服</p>
                    <span></span>
                </a>
             </li>
             <li class="notice">
-               <router-link to="/often_list" class="often_list">
-                  <i></i>
+               <router-link to="/often_list">
+                  <i class="often_list"></i>
                    <p>常购清单</p>
                    <span></span>
                </router-link>
             </li>
             <li>
-               <router-link to="/often_shop" class="often_shop">
-                  <i></i>
+               <router-link to="/often_shop">
+                  <i class="often_shop"></i>
                    <p>常购商家</p>
                    <span></span>
                </router-link>
             </li>
             <li>
-               <router-link to="/set" class="set">
-                  <i></i>
+               <router-link to="/set">
+                  <i class="set"></i>
                    <p>设置</p>
                    <span></span>
                </router-link>
@@ -244,26 +244,38 @@
             position: relative;
             border-bottom: 1px solid #ebebeb;
             a {
+                overflow: hidden;
                 padding: 10/@size;
                 display: block;
                 transition: all .218s;
                 vertical-align: middle;
-                i{
-                    display: inline-block;
-                width: 33/@size;
-                height: 36/@size;
-                background-repeat: no-repeat;
-                background-position: 10/@size center;
-                background-image: url("../../images/usercenter/usercenter_icon.png");
-                background-size:282/@size 33/@size;
-                &.address{
-                    background-position: -125/@size 3/@size
+                i {
+                    float: left;
+                    width: 33/@size;
+                    height: 30/@size;
+                    background-repeat: no-repeat;
+                    background-image: url("../../images/usercenter/usercenter_icon.png");
+                    background-size: 282/@size 33/@size;
+                    &.address {
+                        background-position: -125/@size -2/@size
+                    }
+                    &.kf {
+                        background-position: -156/@size 0/@size
+                    }
+                    &.often_list {
+                        background-position: -256/@size 0/@size
+                    }
+                    &.often_shop {
+                        background-position: -226/@size 0/@size
+                    }
+                    &.set {
+                        background-position: -192/@size -2/@size
+                    }
                 }
-                    }
-                
-                    p{
-                        display: inline-block;
-                    }
+                p {
+                    float: left;
+                    line-height: 30/@size;
+                }
                 &:active {
                     background-color: #f8f8f8;
                 }
@@ -277,8 +289,8 @@
                 background-image: url(../../images/icon_next_back.png);
                 background-repeat: no-repeat;
                 background-position: right center;
-                background-size: 8/@size auto;
-                width: 8/@size;
+                background-size: 6/@size auto;
+                width: 6/@size;
                 height: 100%;
             }
             &.notice {
