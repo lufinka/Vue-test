@@ -1,5 +1,5 @@
 <template>
-  <div class="hello"  @keyup.enter="userLogin">
+  <div class="hello" v-if="ready"  @keyup.enter="userLogin">
    <div class="base_header ui_into">登录</div>
    <h1 class="logo"><img src="../../images/logo.png" alt=""></h1>
    <div class="login_container">
@@ -33,7 +33,8 @@
         headers
     } from '@/service/getDate.js'
     import {
-        setLocalStorage
+        setLocalStorage,
+        getLocalStorage
     } from '@/service/tool.js'
     import {
         Toast,
@@ -45,8 +46,9 @@
         data() {
             return {
                 type: true,
-                usernameVal: '',
-                passwordVal: '',
+                ready: !1,
+                usernameVal: 'testzd',
+                passwordVal: 'q123456',
                 namePattern: /([a-zA-Z0-9_-]){6,20}$/
             }
         },
@@ -54,7 +56,13 @@
             'username',
             'password'
         ]),
+        created() {
+            if (getLocalStorage('token')) {
+                router.replace('home');
+            }
+        },
         mounted() {
+            this.ready = !0;
             if (this.username) {
                 router.replace('home');
             }
@@ -91,7 +99,10 @@
                             setLocalStorage('avatarUrl', data.avatarUrl);
                             setLocalStorage('enterpriseName', data.enterpriseName);
                             setLocalStorage('nameList', data.nameList);
-                            this.setUser(this.usernameVal,this.passwordVal);
+                            this.setUser({
+                                username: this.usernameVal,
+                                password: this.passwordVal
+                            });
                             Toast({
                                 message: '登录成功',
                                 position: 'bottom',

@@ -24,9 +24,9 @@ const getters = {
 const mutations = {
     increment(state) {
       state.ky = '123';
-  },setUser(state,username,password) {
-      state.username = username;
-      state.password = password;
+  },setUser(state,params) {
+      state.username = params.username;
+      state.password = params.password;
   }
 }
 
@@ -38,8 +38,8 @@ const actions = {
 	},
     setUser: ({
 		commit
-	}) => {
-		commit('setUser');
+	},params) => {
+		commit('setUser',params);
 	}
     
 }
