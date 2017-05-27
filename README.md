@@ -2,6 +2,10 @@
 
 > A Vue.js project
 
+# 前言
+
+#### Vue全家桶:Vue2.0+webpack+Vue-resource+Vue-router+Vuex+Mint-ui;
+#
 ## Build Setup
 
 ``` bash
