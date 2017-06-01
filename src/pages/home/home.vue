@@ -11,6 +11,7 @@
     		<router-view></router-view>
     	</transition>
    <notice :target="target"></notice>
+   <footer-bar></footer-bar>
    </div>
 </template>
 
@@ -21,9 +22,13 @@
         TabContainerItem
     } from 'mint-ui';
     import {
+        mapActions
+    } from 'vuex';
+    import {
         mainH5Province,
         listIndexFloorNew
     } from '@/service/getDate';
+    import footer from '@/components/footer';
     import slides from '@/components/slide';
     import notice from '@/components/notice';
     import city from '@/components/city';
@@ -37,6 +42,7 @@
             }
         },
         created() {
+            this.changeFocus(0);
             this.getSlideData();
             this.getProvince();
         },
@@ -44,7 +50,8 @@
             slides,
             notice,
             city,
-            search
+            search,
+            'footerBar': footer
         },
         methods: {
             noticeEvent(arg) {
@@ -71,7 +78,10 @@
                         duration: 2000
                     });
                 });
-            }
+            },
+            ...mapActions([
+                'changeFocus'
+            ])
         }
     }
 </script>

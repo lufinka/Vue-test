@@ -31,7 +31,7 @@
                             </router-link>
                             <router-link to="/search">
                                 <svg class="icon" aria-hidden="true">
-                            <use xlink:href="#icon-searchlist"></use>
+                            <use xlink:href="#icon-search_list"></use>
                         </svg>
                                 <p>搜索</p>
                             </router-link>

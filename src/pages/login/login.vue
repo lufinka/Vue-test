@@ -56,16 +56,16 @@
             'username',
             'password'
         ]),
-        created() {
-            if (getLocalStorage('token')) {
-                router.replace('home');
-            }
-        },
+        //        created() {
+        //            if (getLocalStorage('token')) {
+        //                router.replace('home');
+        //            }
+        //        },
         mounted() {
             this.ready = !0;
-            if (this.username) {
-                router.replace('home');
-            }
+            //            if (this.username) {
+            //                router.replace('home');
+            //            }
         },
         filters: {
             reverse: function(value) {
@@ -74,7 +74,8 @@
         },
         methods: {
             ...mapActions([
-                'setUser' // 映射 this.increment() 为 this.$store.dispatch('increment')
+                'setUserName',
+                'setUserPassword' // 映射 this.increment() 为 this.$store.dispatch('increment')
             ]),
             watched: function() {
                 console.log(this.namePattern.test(this.usernameVal))
@@ -99,10 +100,8 @@
                             setLocalStorage('avatarUrl', data.avatarUrl);
                             setLocalStorage('enterpriseName', data.enterpriseName);
                             setLocalStorage('nameList', data.nameList);
-                            this.setUser({
-                                username: this.usernameVal,
-                                password: this.passwordVal
-                            });
+                            this.setUserName(this.usernameVal);
+                            this.setUserPassword(this.passwordVal);
                             Toast({
                                 message: '登录成功',
                                 position: 'bottom',

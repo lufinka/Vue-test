@@ -1,10 +1,15 @@
 <template>
-<div class="user">
+<div class="user" v-if="ready">
     <section class="top-banner">
         <div class="wrapInfo">
             <img src="../../images/usercenter/user_header.png" alt="">
+            <div v-if="!token">
+            <router-link to="/login" class="btn_config">登录/注册</router-link>
+            </div>
+            <div v-else>
             <div class="username">{{nick}}</div>
             <div class="enterpriseName">{{enterpriseName}}</div>
+            </div>
         </div>
     </section>
     <section class="myOrder">
@@ -17,25 +22,25 @@
             <ul>
                 <li>
                    <router-link to="/order">
-                    <h3>0</h3>
+                    <h3>{{info.unPayNumber || 0}}</h3>
                     <p>待付款</p>
                     </router-link>
                 </li>
                 <li>
                    <router-link to="/order">
-                    <h3>0</h3>
+                    <h3>{{info.deliverNumber || 0}}</h3>
                     <p>待发货</p>
                     </router-link>
                 </li>
                 <li>
                    <router-link to="/order">
-                    <h3>0</h3>
+                    <h3>{{info.reciveNumber || 0}}</h3>
                     <p>待收货</p>
                     </router-link>
                 </li>
                 <li>
                    <router-link to="/order">
-                    <h3>0</h3>
+                    <h3>{{info.unRejRep || 0}}</h3>
                     <p>拒收&#92;补货</p>
                     </router-link>
                 </li>
@@ -81,6 +86,7 @@
             </li>
         </ul>
     </div>
+    <footer-bar></footer-bar>
 </div>
 </template>
 
@@ -90,34 +96,46 @@
         Indicator
     } from 'mint-ui';
     import {
+        mapActions
+    } from 'vuex';
+    import {
         getLocalStorage
     } from '@/service/tool';
+    import footer from '@/components/footer';
     import {
         getUserTipInfo
     } from '@/service/getDate';
     export default {
         data() {
             return {
-                ready: !1,
                 info: {},
+                ready: !1,
                 nick: '',
-                enterpriseName: ''
+                enterpriseName: '',
+                token: ''
 
             }
         },
         created() {
+            this.changeFocus(3);
             Indicator.open();
             this.nick = getLocalStorage('username');
+            this.token = getLocalStorage('token');
             this.enterpriseName = getLocalStorage('enterpriseName');
             this.getUserInfo();
         },
-        components: {},
+        mounted() {
+            this.ready = !0;
+        },
+        components: {
+            'footerBar': footer
+        },
         methods: {
             getUserInfo() {
                 getUserTipInfo(this).then((response) => {
                     Indicator.close();
-                    var data = response.body.data;
                     this.ready = !0;
+                    var data = response.body.data;
                     this.info = data;
                 }, (error) => {
                     this.ready = !0;
@@ -128,7 +146,10 @@
                         duration: 2000
                     });
                 });
-            }
+            },
+            ...mapActions([
+                'changeFocus'
+            ])
         }
     }
 </script>
@@ -154,6 +175,21 @@
         img {
             width: 83/@size;
             height: 83/@size;
+        }
+        .btn_config {
+            width: 104/@size;
+            height: 33/@size;
+            text-align: center;
+            font-size: 13/@size;
+            background: transparent;
+            outline: none;
+            display: block;
+            margin: 16/@size auto 0;
+            color: #fff;
+            border-radius: 5/@size;
+            border: 1px solid #f1f1f1;
+            letter-spacing: 1px;
+            line-height: 2.7;
         }
         .username {
             display: block;
