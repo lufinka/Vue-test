@@ -4,7 +4,7 @@
    <h1 class="logo"><img src="../../images/logo.png" alt=""></h1>
    <div class="login_container">
         <div class="afterLine">
-            <input type="text" name="username"  v-model="usernameVal" class="login_username" @input="watched" placeholder="用户名" />
+            <input type="text" name="username"  v-model="usernameVal" class="login_username" placeholder="用户名" />
             <i v-show="usernameVal" class="btn btn_delete" @click="usernameVal = ''"></i>
         </div>
         <div class="afterLine">
@@ -29,12 +29,11 @@
     } from 'vuex'
     import router from '@/router'
     import {
-        listIndex,
-        headers
+        headers,
+        userLogin
     } from '@/service/getDate.js'
     import {
-        setLocalStorage,
-        getLocalStorage
+        setLocalStorage
     } from '@/service/tool.js'
     import {
         Toast
@@ -65,19 +64,10 @@
             //                router.replace('home');
             //            }
         },
-        filters: {
-            reverse: function(value) {
-                return value.split('').reverse().join('')
-            }
-        },
         methods: {
             ...mapActions([
-                'setUserName',
-                'setUserPassword' // 映射 this.increment() 为 this.$store.dispatch('increment')
+                'setUser'
             ]),
-            watched: function() {
-                console.log(this.namePattern.test(this.usernameVal))
-            },
             userLogin: function() {
                 if (this.usernameVal.length >= 6 && this.passwordVal.length >= 6 && this.namePattern.test(this.usernameVal)) {
                     this.$http.post(
@@ -98,8 +88,10 @@
                             setLocalStorage('avatarUrl', data.avatarUrl);
                             setLocalStorage('enterpriseName', data.enterpriseName);
                             setLocalStorage('nameList', data.nameList);
-                            this.setUserName(this.usernameVal);
-                            this.setUserPassword(this.passwordVal);
+                            this.setUser({
+                                username: this.usernameVal,
+                                password: this.passwordVal
+                            });
                             Toast({
                                 message: '登录成功',
                                 position: 'bottom',
@@ -120,9 +112,6 @@
                         console.log(response)
                     })
                 }
-            },
-            toast: function() {
-                Toast('提示信息');
             }
         }
     }

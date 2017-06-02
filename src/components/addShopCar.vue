@@ -123,7 +123,7 @@
     }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
     @size : 37.5rem;
     .notice {
         &_shadow {
