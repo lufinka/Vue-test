@@ -10,6 +10,7 @@ const testHome = r => require.ensure([], () => r(require('@/pages/home/testHome.
 const pull = r => require.ensure([], () => r(require('@/pages/pull.vue')), 'pull');
 const info = r => require.ensure([], () => r(require('@/pages/info/info.vue')), 'info');
 const user = r => require.ensure([], () => r(require('@/pages/user/user.vue')), 'user');
+const set = r => require.ensure([], () => r(require('@/pages/set/set.vue')), 'set');
 
 const App = r => require.ensure([], () => r(require('@/App.vue')), 'App')
 const slide = r => require.ensure([], () => r(require('@/components/slide.vue')), 'common-home');
@@ -123,6 +124,10 @@ export default new Router({
             path: '/register',
             name: 'register',
             component: register
+            }, {
+            path: '/set',
+            name: 'set',
+            component: set
             }, {
             path: '/user',
             name: 'user',

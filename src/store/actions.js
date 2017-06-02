@@ -6,5 +6,9 @@ export default {
     //设置登陆账号密码
     setUser({commit}, params){
         commit('setUser', params);
+    },
+    //退出登录
+    signOut({commit}){
+        commit('signOut');
     }
 };
