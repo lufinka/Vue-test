@@ -1,19 +1,17 @@
 import {
     getLocalStorage
 } from '../service/tool.js';
-var token = getLocalStorage('token')
-const headers = {
-    token: token,
-    app_version: '0.0.1',
-    os: 'h5',
-    station: '370000',
-    version: 'v1.2'
-};
 
 const fetch = (type, h, url, p) => h.$http({
     method: type ? 'post' : 'get',
     url: url,
-    headers: headers,
+    headers: {
+        token: getLocalStorage('token'),
+        app_version: '0.0.1',
+        os: 'h5',
+        station: '370000',
+        version: 'v1.2'
+    },
     params: p
 });
 

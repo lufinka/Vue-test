@@ -53,9 +53,17 @@
     .aboutus {
         position: relative;
         border-bottom: 1px solid #eee;
-        padding: 10/@size;
         font-size: 15/@size;
         color: #333;
+        a {
+            display: block;
+            padding: 12/@size 10/@size;
+            background-color: #fff;
+            transition: all .1s;
+            &:actived{
+                background-color: #f8f8f8;
+            }
+        }
         span {
             position: absolute;
             right: 10/@size;
