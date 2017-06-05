@@ -9,7 +9,8 @@ Vue.use(Vuex);
 const state = {
 	username: '', // 用户名
 	password: '', // 密码
-    focus:0      //footer选中
+    focus:0,      //footer选中
+    shopCarNum:0  //购物车数量
 }
 
 const store =  new Vuex.Store({

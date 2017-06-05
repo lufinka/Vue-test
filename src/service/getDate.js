@@ -1,19 +1,23 @@
 import {
     getLocalStorage
 } from '../service/tool.js';
-var token = getLocalStorage('token')
-const headers = {
-    token: token,
+var headers = {
+    token: getLocalStorage('token'),
     app_version: '0.0.1',
     os: 'h5',
-    station: '370000',
+    station: '440000',
     version: 'v1.2'
 };
-
 const fetch = (type, h, url, p) => h.$http({
     method: type ? 'post' : 'get',
     url: url,
-    headers: headers,
+    headers: {
+        token: getLocalStorage('token'),
+        app_version: '0.0.1',
+        os: 'h5',
+        station: '440000',
+        version: 'v1.2'
+    },
     params: p
 });
 
@@ -26,11 +30,9 @@ const jsonp = (h, url, p, o) => h.$http.jsonp({
 var listIndex = (h) => fetch('get', h, '/manage/api/h5Index/listIndex');
 var checkAppValidCode = (h) => fetch('get', h, '/passport/api/user/checkAppValidCode');
 var slideshowPics = (h, p) => fetch('get', h, '/mall/api/mOrderMeeting/slideshowPics', p);
-var register = (h, p) => fetch('get', h, '/passport/api/user/register', p);
-var userLogin = function (h, p, o) {
-    post(h, '/passport/api/user/userLogin', p, o)
-};
-var ycaptcha = (h, p) => fetch('jsonp', h, 'http://web-ycaptcha.111.com.cn/checkfrontjsonp?jsoncallback=jsonp1?', p);
+var register = (h, p) => fetch('get', h, '/passport/api/user/register', p); //用户注册
+var userLogin = (h, p) => fetch(!0, h, '/passport/api/user/userLogin', p); //用户登录
+var ycaptcha = (h, p) => fetch('jsonp', h, 'http://web-ycaptcha.111.com.cn/checkfrontjsonp?jsoncallback=jsonp1?', p); //图形验证码
 var listIndexFloor = (h, p) => fetch(!0, h, '/manage/api/mobileIndex/listIndexFloor', p); //首页数据
 var listIndexFloorNew = (h) => fetch(!0, h, '/manage/api/mobileIndex/listIndexFloorNew'); //首页3=>1数据
 var applyChannelapi = (h, p, o) => fetch(!0, h, '/mall/api/applyChannelapi', p, o); // 加入渠道

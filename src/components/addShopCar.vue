@@ -32,11 +32,15 @@
 
 <script>
     import {
+        mapActions
+    } from 'vuex';
+    import {
         Toast
     } from 'mint-ui';
     import {
-        headers
-    } from '@/service/getDate.js';
+        headers,
+        cartAccount
+    } from '@/service/getDate';
     export default {
         props: {
             target: {
@@ -108,6 +112,7 @@
                         duration: 2000
                     });
                     if (action.body.data && action.body.data.result == "成功") {
+                        this.getNum();
                         this.close();
                     }
                 }, error => {
@@ -117,13 +122,22 @@
                         duration: 2000
                     });
                 })
-            }
+            },
+            getNum() {
+                this.getShopCarNum({
+                    fn: cartAccount,
+                    that: this
+                });
+            },
+             ...mapActions([
+                'getShopCarNum'
+            ])
         },
         components: {}
     }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
     @size : 37.5rem;
     .notice {
         &_shadow {

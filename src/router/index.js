@@ -11,6 +11,8 @@ const testHome = r => require.ensure([], () => r(require('@/pages/home/testHome.
 const pull = r => require.ensure([], () => r(require('@/pages/pull.vue')), 'pull');
 const info = r => require.ensure([], () => r(require('@/pages/info/info.vue')), 'info');
 const user = r => require.ensure([], () => r(require('@/pages/user/user.vue')), 'user');
+const set = r => require.ensure([], () => r(require('@/pages/set/set.vue')), 'set');
+const about = r => require.ensure([], () => r(require('@/pages/about/about.vue')), 'about');
 
 const App = r => require.ensure([], () => r(require('@/App.vue')), 'App')
 const slide = r => require.ensure([], () => r(require('@/components/slide.vue')), 'common-home');
@@ -48,7 +50,7 @@ export default new Router({
             path: '/pull',
             name: 'pull',
             component: pull
-            },{
+            }, {
             path: '/info/:productId/:enterpriseId',
             name: 'info',
             component: info
@@ -62,15 +64,6 @@ export default new Router({
             component: home,
             children: [{
                 path: '',
-                name: 'testHome',
-                component: testHome,
-                children: [{
-                    path: '/testProduct',
-                    name: 'testProduct',
-                    component: testProduct
-                          }]
-            }, {
-                path: '/commonHome',
                 name: 'commonHome',
                 component: commonHome,
                 children: [{
@@ -86,6 +79,15 @@ export default new Router({
                     name: 'company',
                     component: company
             }]
+            }, {
+                path: '/testHome',
+                name: 'testHome',
+                component: testHome,
+                children: [{
+                    path: '/testProduct',
+                    name: 'testProduct',
+                    component: testProduct
+                          }]
             }, {
                 path: '/homeProduct',
                 name: 'homeProduct',
@@ -128,6 +130,14 @@ export default new Router({
             path: '/register',
             name: 'register',
             component: register
+            }, {
+            path: '/set',
+            name: 'set',
+            component: set
+            }, {
+            path: '/about',
+            name: 'about',
+            component: about
             }, {
             path: '/user',
             name: 'user',

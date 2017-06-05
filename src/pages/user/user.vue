@@ -239,6 +239,7 @@
             .four {
                 width: 100%;
                 text-align: center;
+                overflow: hidden;
                 ul {
                     display: flex;
                     li {
