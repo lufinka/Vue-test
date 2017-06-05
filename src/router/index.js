@@ -5,6 +5,7 @@ const index = r => require.ensure([], () => r(require('@/pages/index.vue')), 'in
 const register = r => require.ensure([], () => r(require('@/pages/register/register.vue')), 'register');
 const home = r => require.ensure([], () => r(require('@/pages/home/home.vue')), 'home');
 const login = r => require.ensure([], () => r(require('@/pages/login/login.vue')), 'login');
+const forgetpsw = r => require.ensure([], () => r(require('@/pages/forgetpsw/forgetpsw.vue')), 'forgetpsw');
 const commonHome = r => require.ensure([], () => r(require('@/pages/home/commonHome.vue')), 'common-home');
 const testHome = r => require.ensure([], () => r(require('@/pages/home/testHome.vue')), 'test-home');
 const pull = r => require.ensure([], () => r(require('@/pages/pull.vue')), 'pull');
@@ -51,7 +52,11 @@ export default new Router({
             path: '/info/:productId/:enterpriseId',
             name: 'info',
             component: info
-            }, {
+            },{
+            	path: '/forgetpsw',
+            	name: 'forgetpsw',
+            	component: forgetpsw
+            },{
             path: '/home',
             redirect: 'home',
             component: home,

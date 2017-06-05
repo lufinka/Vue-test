@@ -14,7 +14,7 @@
         </div>
         <p class="forget_password">
             <span class="login_error">用户名或者密码错误，请重试</span>
-            <!--<a href="">忘记密码？</a>-->
+           	<router-link to="/forgetpsw">忘记密码</router-link>
         </p>
         <a href="javascript:;" :class="{btn_next:true,btn_submit:true,btn_next_ok:usernameVal.length >=6 && passwordVal.length >=6 && namePattern.test(usernameVal)}" @click="userLogin">登录</a>
         <router-link class="btn_next btn_register" to="/register">注册</router-link>
@@ -56,16 +56,16 @@
             'username',
             'password'
         ]),
-        //        created() {
-        //            if (getLocalStorage('token')) {
-        //                router.replace('home');
-        //            }
-        //        },
+        created() {
+            if (getLocalStorage('token')) {
+                router.replace('home');
+            }
+        },
         mounted() {
             this.ready = !0;
-            //            if (this.username) {
-            //                router.replace('home');
-            //            }
+            if (this.username) {
+                router.replace('home');
+            }
         },
         filters: {
             reverse: function(value) {
@@ -74,8 +74,7 @@
         },
         methods: {
             ...mapActions([
-                'setUserName',
-                'setUserPassword' // 映射 this.increment() 为 this.$store.dispatch('increment')
+                'setUser' // 映射 this.increment() 为 this.$store.dispatch('increment')
             ]),
             watched: function() {
                 console.log(this.namePattern.test(this.usernameVal))
@@ -100,8 +99,10 @@
                             setLocalStorage('avatarUrl', data.avatarUrl);
                             setLocalStorage('enterpriseName', data.enterpriseName);
                             setLocalStorage('nameList', data.nameList);
-                            this.setUserName(this.usernameVal);
-                            this.setUserPassword(this.passwordVal);
+                            this.setUser({
+                                username: this.usernameVal,
+                                password: this.passwordVal
+                            });
                             Toast({
                                 message: '登录成功',
                                 position: 'bottom',
