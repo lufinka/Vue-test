@@ -14,7 +14,7 @@
         </div>
         <p class="forget_password">
             <span class="login_error">用户名或者密码错误，请重试</span>
-            <a href="">忘记密码？</a>
+            <router-link to="/forgetpsw">忘记密码？</router-link>
         </p>
         <a href="javascript:;" :class="{btn_next:true,btn_submit:true,btn_next_ok:usernameVal.length >=6 && passwordVal.length >=6 && namePattern.test(usernameVal)}" @click="userLogin">登录</a>
         <router-link class="btn_next btn_register" to="/register">注册</router-link>
