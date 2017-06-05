@@ -5,7 +5,7 @@ var headers = {
     token: getLocalStorage('token'),
     app_version: '0.0.1',
     os: 'h5',
-    station: '370000',
+    station: '440000',
     version: 'v1.2'
 };
 const fetch = (type, h, url, p) => h.$http({
@@ -15,7 +15,7 @@ const fetch = (type, h, url, p) => h.$http({
         token: getLocalStorage('token'),
         app_version: '0.0.1',
         os: 'h5',
-        station: '370000',
+        station: '440000',
         version: 'v1.2'
     },
     params: p

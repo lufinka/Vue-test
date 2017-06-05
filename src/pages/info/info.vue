@@ -316,7 +316,7 @@
                <svg class="icon" aria-hidden="true">
                         <use xlink:href="#icon-shopcar"></use>
                </svg>
-               <i class="shop_count" :style=" {display: shopCar_count>0?'inline-block':'none'}">{{shopCar_count}}</i>
+               <i class="shop_count" v-if="shopCarNum">{{shopCarNum}}</i>
                <p>购物车</p>
                </router-link>
            </div>
@@ -343,6 +343,10 @@
 
 <script>
     import {
+        mapGetters,
+        mapActions
+    } from 'vuex';
+    import {
         Toast,
         TabContainer,
         MessageBox,
@@ -368,19 +372,21 @@
                 addCartarget: {}, //加入购物车对象
                 target: [], //到货通知
                 info: {},
-                ready:!1,
+                ready: !1,
                 count: 0,
-                shopCar_count: 0, //购物车数量
                 slideData: [{
                     "imgPath": "/images/default.jpg",
                     "url": "javascript:;"
                 }] //焦点图数据
             }
         },
+        computed: mapGetters([
+            'shopCarNum' //购物车数量
+        ]),
         created() {
             Indicator.open();
             this.getDetail(this.$route.params.productId, this.$route.params.enterpriseId);
-            this.getsShopcarNum();
+            this.getNum();
         },
         methods: {
             noticeEvent() {
@@ -458,45 +464,43 @@
                     })
                 }, cancel => {});
             },
-            getsShopcarNum(){
-            if (!getLocalStorage("token")) return false;
-            cartAccount(this).then((response) => {
-                this.shopCar_count = response.body.data.count;
-                }, (error) => {
-                    Toast({
-                        message: error,
-                        position: 'bottom',
-                        duration: 2000
-                    });
+            getNum() {
+                if (!getLocalStorage("token")) return false;
+                this.getShopCarNum({
+                    fn: cartAccount,
+                    that: this
                 });
-        }
+            },
+            ...mapActions([
+                'getShopCarNum'
+            ])
         },
-        filters: {
-            price(x) {
-                var f = parseFloat(x);
-                if (isNaN(f)) {
-                    return false;
-                }
-                var f = Math.round(x * 100) / 100;
-                var s = f.toString();
-                var rs = s.indexOf('.');
-                if (rs < 0) {
-                    rs = s.length;
-                    s += '.';
-                }
-                while (s.length <= rs + 2) {
-                    s += '0';
-                }
-                return s;
+            filters: {
+                price(x) {
+                    var f = parseFloat(x);
+                    if (isNaN(f)) {
+                        return false;
+                    }
+                    var f = Math.round(x * 100) / 100;
+                    var s = f.toString();
+                    var rs = s.indexOf('.');
+                    if (rs < 0) {
+                        rs = s.length;
+                        s += '.';
+                    }
+                    while (s.length <= rs + 2) {
+                        s += '0';
+                    }
+                    return s;
 
+                }
+            },
+            components: {
+                slides,
+                notice,
+                addShopCar
             }
-        },
-        components: {
-            slides,
-            notice,
-            addShopCar
         }
-    }
 </script>
 
 <style lang="less" scoped>
@@ -542,7 +546,6 @@
                 font-size: 12/@size;
                 border-radius: 15/@size;
                 letter-spacing: 1px;
-                display: none;
             }
             .icon {
                 font-size: 20/@size;

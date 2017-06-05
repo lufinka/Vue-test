@@ -10,5 +10,9 @@ export default {
     //退出登录
     signOut({commit}){
         commit('signOut');
+    },
+    //获取购物车数量
+    getShopCarNum({commit}, params){
+        commit('getShopCarNum', params);
     }
 };

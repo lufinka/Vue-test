@@ -10,5 +10,9 @@ export default {
     //密码
     password(state) {
         return state.password;
+    },
+    //购物车数量
+    shopCarNum(state) {
+        return state.shopCarNum;
     }
 }

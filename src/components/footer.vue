@@ -28,7 +28,7 @@
                         <use xlink:href="#icon-shopcar"></use>
                     </svg>
                     </h2>
-                    <i v-if="count">{{count}}</i>
+                    <i v-if="shopCarNum">{{shopCarNum}}</i>
                     <p>购物车</p>
                 </router-link>
             </li>
@@ -48,28 +48,29 @@
 
 <script>
     import {
-        mapGetters
+        mapGetters,
+        mapActions
     } from 'vuex';
     import {
         cartAccount
     } from '@/service/getDate';
     export default {
-        data() {
-            return {
-                count: 0
-            }
-        },
         computed: mapGetters([
-            'focus'
+            'focus',
+            'shopCarNum'
         ]),
         created() {
-            this.getShopCarNum();
+            this.getNum();
         },
         methods: {
-            getShopCarNum() {
-                cartAccount(this).then((response) => {
-                    this.count = response.body.data.count;
-                })
+            ...mapActions([
+                'getShopCarNum'
+            ]),
+            getNum() {
+                this.getShopCarNum({
+                    fn: cartAccount,
+                    that: this
+                });
             }
         }
     }

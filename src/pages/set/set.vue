@@ -38,7 +38,7 @@
             sign() {
                 this.signOut();
                 setLocalStorage('token', '');
-                router.back()
+                router.back();
             }
         }
     }
