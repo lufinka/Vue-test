@@ -44,6 +44,7 @@ var queryDrugByPageForAll = (h, p) => fetch(!0, h, '/mall/api/experiment/queryDr
 var getProductDetail = (h, p) => fetch(!1, h, '/mall/api/product/getProductDetail', p); //商品详细信息
 var cartAccount = (h) => fetch(!1, h, '/order/api/cart/cartAccount'); //获取购物车数量
 var getUserTipInfo = (h) => fetch(!1, h, '/order/api/order/getUserTipInfo'); //个人中心
+var getShopCartList = (h) => fetch(!1, h, 'order/api/cart/getShopCartList'); //获取购物车详情
 
 export {
     headers,
@@ -63,5 +64,6 @@ export {
     queryDrugByPageForAll,
     getProductDetail,
     cartAccount,
-    getUserTipInfo
+    getUserTipInfo,
+    getShopCartList
 }
