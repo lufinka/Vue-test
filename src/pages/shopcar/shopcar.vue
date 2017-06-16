@@ -184,14 +184,16 @@
 <script>
     import {
         Toast,
-        Indicator
+        Indicator,
+        MessageBox
     } from 'mint-ui';
     import {
         mapActions
     } from 'vuex';
     import footer from '@/components/footer';
     import {
-        getShopCartList
+        getShopCartList,
+        deleteShopCarts
     } from '@/service/getDate';
     import {
         math
@@ -303,9 +305,8 @@
                 this.allChecked = !this.allChecked;
                 console.log(this.allChecked)
                 for (var i = 0; i < this.shopCartList.length; i++) {
-                    this.shopCartList[i].checked = !this.allChecked;
                     for (var j = 0; j < this.shopCartList[i].products.length; j++) {
-                        this.shopCartList[i].products[j].checked == !this.allChecked;
+                        this.selectOne(this.shopCartList[i], this.shopCartList[i].products[j]);
                     }
                 }
             },
@@ -316,8 +317,36 @@
                     this.editStatus = !0;
                 }
             },
-            settle(){},
-            deleteDate(){},
+            settle() {},
+            deleteDate() {
+                var slef = this;
+                var data = {
+                    shoppingCartIdList: []
+                };
+                for (var i = 0; i < this.shopCartList.length; i++) {
+                    for (var j = 0; j < this.shopCartList[i].products.length; j++) {
+                        if (this.shopCartList[i].products[j].checked == !0) {
+                            data.shoppingCartIdList.push(this.shopCartList[i].products[j].productId+'');
+                        }
+                    }
+                };
+                console.log(data)
+                MessageBox.confirm('确定要删除商品吗?').then(action => {
+                    deleteShopCarts(slef, data).then(action => {
+                        Toast({
+                            message: action.body.message,
+                            position: 'bottom',
+                            duration: 2000
+                        });
+                    }, error => {
+                        Toast({
+                            message: error,
+                            position: 'bottom',
+                            duration: 2000
+                        });
+                    })
+                }, cancel => {});
+            },
             isLogin() {
                 if (getLocalStorage('token')) {
                     this.noDate = !1;
