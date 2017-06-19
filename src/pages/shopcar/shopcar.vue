@@ -14,8 +14,14 @@
 
                 </section>
                 <div v-if="item.supplyId == 8353 && item.freighRuleList.length && item.total <= item.freighRuleList[item.freighRuleList.length-1].upValue" class="add_item">
-                    <span id="add_item"><span class='fl'>运费：<em id='yf'>{{item.freighRuleList[0].ruleValue}}</em>元，<em id='short'>满<i>{{item.freighRuleList[item.freighRuleList.length-1].upValue}}</i></em>元免邮</span></span>
+                    <div v-if="item.total == 0">
+                    <span id="add_item"><span class='fl'>运费：<em id='yf'>{{item | postage}}</em>元，<em id='short'>满<i>{{item.freighRuleList[item.freighRuleList.length-1].upValue}}</i></em>元免邮</span></span>
                     <a class="fr" href="/selfstores.html?enterpriseId=8353">去凑单&gt;</a>
+                    </div>
+                    <div v-else>
+                        <span id="add_item"><span class='fl'>运费：<em id='yf'>{{item | postage}}</em>元，<em id='short'>还差<i>{{item.freighRuleList[item.freighRuleList.length-1].upValue-item.total}}</i></em>元免邮</span></span>
+                    <a class="fr" href="/selfstores.html?enterpriseId=8353">去凑单&gt;</a>
+                    </div>
                 </div>
                 <!-- 购买商品列表 -->
                 <section class="buy_shop_list">
@@ -79,7 +85,7 @@
                                         <div v-if="value.statusDesc == '0'" class="batch_status">
                                             <div class="shop_count" :data-shopcardid=value.shoppingCartId>
                                                 <button class="btn_left" @click.stop.prevent="minus(item,value)">-</button>
-                                                <input class="num" type="tel" @click.stop.prevent maxlength="6"  @input="changeQuantity(value)" v-model="value.quantity">
+                                                <input class="num" type="tel" @click.stop.prevent maxlength="6"  @input="changeQuantity(item,value)" v-model="value.quantity">
                                                 <button class="btn_right" @click.stop.prevent="add(item,value)">+</button>
                                             </div>
                                         </div>
@@ -155,7 +161,7 @@
     <footer-bar></footer-bar>
     
         <!-- 购物车结算&删除 -->
-        <section class="settlement" v-show="shopCartList.length">
+        <section class="settlement" v-if="shopCartList.length">
             <div class="checkAll">
                 <label for="check_all">
                     全选
@@ -192,6 +198,7 @@
     } from 'vuex';
     import footer from '@/components/footer';
     import {
+        headers,
         getShopCartList,
         deleteShopCarts
     } from '@/service/getDate';
@@ -212,6 +219,7 @@
                 shopCartList: [],
                 newlistData: [],
                 submitData: {},
+                allChecked: !1,
                 noDate: !1, //无数据
                 editStatus: !0 //编辑购物车
             }
@@ -231,18 +239,6 @@
                 }
                 return count;
             },
-            allChecked: function() {
-                var self = this;
-                var bl = this.shopCartList.every(function(item) {
-                    return item.products.every(function(value) {
-                        return value.checked == self.shopCartList[0].checked;
-                    });
-                });
-                if (bl) {
-                    bl = self.shopCartList[0].checked;
-                }
-                return bl;
-            },
             size: function() {
                 var num = 0;
                 for (var i = 0; i < this.shopCartList.length; i++) {
@@ -256,7 +252,24 @@
             }
         },
         watch: {
-
+            shopCartList: {
+                handler: function(v, o) {
+                    var self = this;
+                    var bl = v.every(function(item) {
+                        return item.products.every(function(value) {
+                            return value.checked == v[0].checked;
+                        });
+                    });
+                    console.log(bl)
+                    if (bl) {
+                        bl = v[0].checked;
+                    }else{
+                        bl = !1;
+                    }
+                    this.allChecked = bl;
+                },
+                deep: true
+            }
         },
         created() {
             this.changeFocus(2);
@@ -285,10 +298,12 @@
             },
             minus(item, value) {
                 if (!value.checked) {
-                    this.selectOne(item, value)
+                    this.selectOne(item, value);
                 }
                 if (value.quantity > 1) {
                     value.quantity--;
+                }else{
+                    this.selectOne(item, value);
                 }
             },
             add(item, value) {
@@ -297,16 +312,21 @@
                 }
                 value.quantity++;
             },
-            changeQuantity(t) {
-                t.quantity = t.quantity > 1 ? t.quantity : 1;
-                this.allMoney();
+            changeQuantity(item,value) {
+                value.quantity = value.quantity >= value.stockCount ? value.stockCount : value.quantity;
+                if (!value.checked) {
+                    this.selectOne(item, value)
+                }
             },
             checkAll() {
-                this.allChecked = !this.allChecked;
-                console.log(this.allChecked)
                 for (var i = 0; i < this.shopCartList.length; i++) {
+                    if (this.shopCartList[i].checked == this.allChecked) {
+                            this.shopCartList[i].checked = !this.allChecked;
+                        }
                     for (var j = 0; j < this.shopCartList[i].products.length; j++) {
-                        this.selectOne(this.shopCartList[i], this.shopCartList[i].products[j]);
+                        if (this.shopCartList[i].products[j].checked == this.allChecked) {
+                            this.shopCartList[i].products[j].checked = !this.allChecked;
+                        }
                     }
                 }
             },
@@ -320,19 +340,26 @@
             settle() {},
             deleteDate() {
                 var slef = this;
+                var deal = [];
                 var data = {
                     shoppingCartIdList: []
                 };
                 for (var i = 0; i < this.shopCartList.length; i++) {
                     for (var j = 0; j < this.shopCartList[i].products.length; j++) {
                         if (this.shopCartList[i].products[j].checked == !0) {
-                            data.shoppingCartIdList.push(this.shopCartList[i].products[j].productId+'');
+                            data.shoppingCartIdList.push(this.shopCartList[i].products[j].shoppingCartId + '');
+                            deal.push([i, j]);
                         }
                     }
                 };
                 console.log(data)
                 MessageBox.confirm('确定要删除商品吗?').then(action => {
-                    deleteShopCarts(slef, data).then(action => {
+                    this.$http.post('/order/api/cart/deleteShopCarts', data, {
+                        headers: headers
+                    }).then(action => {
+                        for (var i = 0; i < deal.length; i++) {
+                            this.shopCartList[deal[i][0]].products.splice([deal[0][1]],1);
+                        }
                         Toast({
                             message: action.body.message,
                             position: 'bottom',
@@ -364,7 +391,7 @@
                     if (data != null) {
                         //保存促销信息
                         for (var i = 0, obj = data.shopCartList; obj && i < obj.length; i++) {
-                            obj[i].checked = false;
+                            obj[i].checked = !1;
                             obj[i].total = 0;
                             for (var j = 0; obj[i].products && j < obj[i].products.length; j++) {
                                 obj[i].products[j].checked = !1;
@@ -939,27 +966,14 @@
             ])
         },
         filters: {
-            freighRules: function(s) {
-                let arr = [];
-                let format = '';
-                let l = s.freighRuleList;
-                self.maxNum = l[l.length - 1]['upValue'];
-                $(".shop_check_li").each(function(i, v) {
-                    arr.push($(this).attr(":data-productid"));
-                });
-                if (arr.length != 0) {
-                    if (s.freighRuleList) {
-                        let freighRule = s.freighRuleList;
-                        freighRule.forEach(function(v, i) {
-                            if (s.productTotalPrice - s.fullReductionMoney >= v.downValue && s.productTotalPrice - s.fullReductionMoney < v.upValue) {
-                                format = "<span class='fl'>运费：<em id='yf'>" + v.ruleValue + "</em>元，<em id='short'>还差<i>" + math.numSub(self.maxNum, math.numSub(s.productTotalPrice, s.fullReductionMoney)) + "</i></em>元免邮</span>";
-                            }
-                        })
-                    }
-                } else {
-                    format = "<span class='fl'>运费：<em id='yf'>0</em>元，<em id='short'>满<i>" + self.maxNum + "</i></em>元免邮</span>";
+            postage: function(s) {
+                var t = 0;
+                for(var i = 0;i < s.freighRuleList.length;i++){
+                        if(s.total-s.fullReductionMoney>=s.freighRuleList[i].downValue && s.total-s.fullReductionMoney <s.freighRuleList[i].upValue){
+								t =  s.freighRuleList[i].ruleValue;
+							}
                 }
-                return format;
+                return t
             },
             price: function(x) {
                 var f = parseFloat(x);
