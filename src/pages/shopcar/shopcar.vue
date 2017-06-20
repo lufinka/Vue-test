@@ -71,9 +71,7 @@
                                     </div>
                                     <div class="shop_infor">
                                         <div class="shop_name">
-                                            <p class="shop_title">
-                                                <span v-if="value.statusDesc == '0' && value.productPromotion && value.productPromotion.promotionId != 0 " class="sale_type_tj" data-type="特价"></span> {{value.productName}}
-                                            </p>
+                                            <p data-type="特价" :class="{shop_title:true,sale_type_tj:value.statusDesc == 0 && value.productPromotion && value.productPromotion.promotionId != 0}">{{value.productName}}</p>
                                         </div>
                                         <div class="shop_address">
                                             <span v-if="value.statusDesc == '0'" class="money">￥<em>{{value.productPrice | price}}</em></span>
@@ -255,18 +253,20 @@
             shopCartList: {
                 handler: function(v, o) {
                     var self = this;
-                    var bl = v.every(function(item) {
-                        return item.products.every(function(value) {
-                            return value.checked == v[0].checked;
+                    if (v) {
+                        var bl = v.every(function(item) {
+                            return item.products.every(function(value) {
+                                return value.checked == v[0].checked;
+                            });
                         });
-                    });
-                    console.log(bl)
-                    if (bl) {
-                        bl = v[0].checked;
-                    }else{
-                        bl = !1;
+                        console.log(bl)
+                        if (bl) {
+                            bl = v[0].checked;
+                        } else {
+                            bl = !1;
+                        }
+                        this.allChecked = bl;
                     }
-                    this.allChecked = bl;
                 },
                 deep: true
             }
@@ -280,6 +280,9 @@
             'footerBar': footer
         },
         methods: {
+            setNum(n) {
+                this.setShopCarNum(n);
+            },
             selectAll(v) {
                 v.checked = !v.checked;
                 for (var i = 0; i < v.products.length; i++) {
@@ -302,7 +305,7 @@
                 }
                 if (value.quantity > 1) {
                     value.quantity--;
-                }else{
+                } else {
                     this.selectOne(item, value);
                 }
             },
@@ -312,7 +315,7 @@
                 }
                 value.quantity++;
             },
-            changeQuantity(item,value) {
+            changeQuantity(item, value) {
                 value.quantity = value.quantity >= value.stockCount ? value.stockCount : value.quantity;
                 if (!value.checked) {
                     this.selectOne(item, value)
@@ -321,8 +324,8 @@
             checkAll() {
                 for (var i = 0; i < this.shopCartList.length; i++) {
                     if (this.shopCartList[i].checked == this.allChecked) {
-                            this.shopCartList[i].checked = !this.allChecked;
-                        }
+                        this.shopCartList[i].checked = !this.allChecked;
+                    }
                     for (var j = 0; j < this.shopCartList[i].products.length; j++) {
                         if (this.shopCartList[i].products[j].checked == this.allChecked) {
                             this.shopCartList[i].products[j].checked = !this.allChecked;
@@ -352,14 +355,19 @@
                         }
                     }
                 };
-                console.log(data)
+                console.log(deal)
                 MessageBox.confirm('确定要删除商品吗?').then(action => {
                     this.$http.post('/order/api/cart/deleteShopCarts', data, {
                         headers: headers
                     }).then(action => {
-                        for (var i = 0; i < deal.length; i++) {
-                            this.shopCartList[deal[i][0]].products.splice([deal[0][1]],1);
+                        this.setNum(deal.length);
+                        for (var i = (deal.length - 1); i >= 0; i--) {
+                            this.shopCartList[deal[i][0]].products.splice(deal[i][1], 1);
+                            if (this.shopCartList[deal[i][0]].products.length == 0) {
+                                this.shopCartList.splice(deal[i][0], 1);
+                            }
                         }
+                        deal = [];
                         Toast({
                             message: action.body.message,
                             position: 'bottom',
@@ -416,344 +424,6 @@
                         duration: 2000
                     });
                 });
-            },
-            shopChange() {
-                var self = this;
-                self.shopeLi.each(function() {
-                    var $this = $(this);
-                    self.addOrOther($this);
-                });
-            },
-            addOrOther(obj) {
-                var self = this;
-                var _productConfig = {
-                        stock: +obj.attr(':data-stork'),
-                        min: +obj.attr(':data-min')
-                    },
-                    $btnReduce = obj.find('.btn_left'),
-                    $btnAdd = obj.find('.btn_right'),
-                    $productNumber = obj.find('.num');
-
-                function _fnCount(min, stock, ele, reduce, add) {
-                    var val = +ele.val();
-                    var valPattern = /^[1-9]+[0-9]*$/;
-                    if (valPattern.test(val)) {
-                        self.countTextData();
-                    } else {
-                        ele.val("")
-                    }
-                    _fnReduce(min, stock, ele, reduce, add);
-                    _fnAdd(min, stock, ele, reduce, add);
-                }
-
-                function _fnReduce(min, stock, ele, reduce, add) {
-                    if (+ele.val() > +min) {
-                        reduce.addClass('btn_reduce_number_ok');
-                        obj.find('.btn_reduce_number_ok').off('click').on('click', function() {
-                            var checkBox = $(this).parent().parent().parent().find('.checkitem');
-                            var isCheck = false;
-                            if (checkBox.is(':checked')) {
-                                isCheck = true;
-                            } else {
-                                isCheck = false;
-                            }
-                            if (!isCheck) {
-                                checkBox.triggerFastClick('click');
-                            }
-                            ele.val() > min && ele.val(ele.val() - min);
-                            ele.val() <= min && reduce.removeClass('btn_reduce_number_ok');
-                            ele.val() < stock && add.addClass('btn_add_number_ok');
-                            _fnAdd(min, stock, ele, reduce, add);
-                            self.addOrOtherClick($(this));
-                            self.countTextData();
-                            return;
-                        })
-                    } else {
-                        reduce.removeClass('btn_reduce_number_ok');
-                    }
-                }
-
-                function _fnAdd(min, stock, ele, reduce, add) {
-                    if (+ele.val() + min > stock) {
-                        add.removeClass('btn_add_number_ok');
-                    } else {
-                        add.addClass('btn_add_number_ok');
-                        obj.find('.btn_add_number_ok').off('click').on('click', function() {
-                            var checkBox = $(this).parent().parent().parent().find('.checkitem');
-                            var isCheck = false;
-                            if (checkBox.is(':checked')) {
-                                isCheck = true;
-                            } else {
-                                isCheck = false;
-                            }
-                            if (!isCheck) {
-                                checkBox.triggerFastClick('click');
-                            }
-                            ele.val() < stock && ele.val(+ele.val() + min);
-                            ele.val() >= stock && add.removeClass('btn_add_number_ok');
-                            ele.val() > min && reduce.addClass('btn_reduce_number_ok');
-                            _fnReduce(min, stock, ele, reduce, add);
-                            self.addOrOtherClick($(this));
-                            self.countTextData();
-                            return;
-                        })
-                    }
-                }
-
-                function _valPrint(min, stock, ele, reduce) {
-                    var shoppingCartId = ele.parent().data('shopcardid'),
-                        quantity = ele.val();
-                    if (ele.val()) {
-                        if (ele.val() >= stock) {
-                            ele.val(stock / min * min);
-                            self.goShop = false;
-                            common.msgShowDelay('库存不足', 3);
-                            quantity = ele.val();
-                            self.refreshAjax(shoppingCartId, quantity);
-                            setTimeout(function() {
-                                self.goShop = true;
-                            }, 3050)
-                            return true;
-                        } else if (ele.val() % min != 0) {
-                            ele.val(ele.val() - ele.val() % min);
-                            reduce.removeClass('btn_reduce_number_ok');
-                            return true;
-                        } else {
-                            self.refreshAjax(shoppingCartId, quantity);
-                            return true;
-                        }
-                    } else {
-                        ele.val(min);
-                        reduce.removeClass('btn_reduce_number_ok');
-                        return true;
-                    }
-                    return false;
-                }
-                $productNumber.blur(function() {
-                    _valPrint(_productConfig.min, _productConfig.stock, $(this), $btnReduce);
-                    _fnCount(_productConfig.min, _productConfig.stock, $productNumber, $btnReduce, $btnAdd, true);
-                })
-                $productNumber.on('input', function() {
-                    if ($(this).val()) {
-                        if (!/^\+?[1-9]\d*$/.test($(this).val())) {
-                            $(this).val('');
-                        }
-                    }
-                });
-                _fnCount(_productConfig.min, _productConfig.stock, $productNumber, $btnReduce, $btnAdd);
-            },
-            updataFree(data) {
-                var self = this;
-                var shopCartList = data.shopCartList;
-                var arr = [];
-                $(".shop_check_li").each(function(i, v) {
-                    arr.push($(this).attr(":data-productid"));
-                });
-                var free = arr.join(",");
-                if (arr.length == 0) {
-                    var v = "满<i>" + self.maxNum + "</i>";
-                    $("#yf").html(0);
-                    $("#short").html(v);
-                    return;
-                }
-                common.calculationFreightShoppingCart({
-                    "shoppingCartId": free
-                }, {
-                    "func": function(data) {
-                        if (self.response.statusCode == -3) {
-                            common.msgShowDelay(self.response.message, 3);
-                        } else {
-                            if (data.specialSubMoney >= self.maxNum) {
-                                $("#yf").html(0);
-                                $("#short").html("满<i>" + self.maxNum + "</i>");
-                            } else {
-                                data.orderFreight = data.orderFreight ? data.orderFreight : 0;
-                                data.specialSubMoney = data.specialSubMoney ? data.specialSubMoney : 0;
-                                $("#yf").html(data.orderFreight);
-                                $("#short").html("还差<i>" + math.numSub(self.maxNum, data.specialSubMoney) + "</i>");
-                            }
-                        }
-                    }
-                }, self);
-            },
-            refreshAjax(shoppingCartId, quantity) {
-                var self = this;
-                common.updateShopCartAjax({
-                    "shoppingCartId": shoppingCartId,
-                    "quantity": quantity
-                }, {
-                    "func": function(data) {
-                        if (self.response.statusCode == -3) {
-                            common.msgShowDelay(self.response.message, 3);
-                        } else {
-                            self.updataFree(data);
-                        }
-                    }
-                }, self);
-            },
-            toDecimal2(x) {
-                var f = parseFloat(x);
-                if (isNaN(f)) {
-                    return false;
-                }
-                var f = Math.round(x * 100) / 100;
-                var s = f.toString();
-                var rs = s.indexOf('.');
-                if (rs < 0) {
-                    rs = s.length;
-                    s += '.';
-                }
-                while (s.length <= rs + 2) {
-                    s += '0';
-                }
-                return s;
-            },
-            addOrOtherClick(parent) {
-                var self = this;
-                var shoppingCartId = parent.parent().data('shopcardid'),
-                    quantity = parent.parent().find('.num').val();
-                self.refreshAjax(shoppingCartId, quantity);
-            },
-            countTextData() {
-                var self = this,
-                    count = 0,
-                    list = [],
-                    shopListData = [];
-
-                self.shop = true;
-                self.shopeCheckLi = $('.shop_check_li');
-
-                if (self.shopeCheckLi.length < 1) {
-                    list = [];
-                    $('.shop_tips').show();
-                    self.shopData.shopCartList = list;
-                    self.$submitBtn.addClass('btn_disabled');
-                    self.$deleteBtn.addClass('btn_disabled');
-                    self.totalMoney.text(count + '.00');
-                } else {
-                    self.$factoryBox.each(function() {
-                        var minSalePrice = $(this).attr(':data-minSalePrice'),
-                            productTotalPrice = $(this).attr(':data-productTotalPrice'),
-                            supplyId = $(this).attr('data-supplyId'),
-                            supplyName = $(this).find('.factory_name').text(),
-                            shopeCheck = $('.shop_check_li', this),
-                            shopeCheckLength = shopeCheck.length,
-                            shopTips = $(this).find('.shop_tips'),
-                            fatoryjr = 0,
-                            CartIdList = [];
-                        if (shopeCheckLength > 0) {
-                            var data = {
-                                'minSalePrice': minSalePrice,
-                                'productTotalPrice': productTotalPrice,
-                                'supplyId': supplyId,
-                                'supplyName': supplyName,
-                                'isOk': '1',
-                                'products': []
-                            }
-                            shopeCheck.each(function() {
-                                var dj = parseFloat($('.money em', this).text()),
-                                    sl = parseInt($('.num', this).val()),
-                                    jr = math.numMulti(dj, sl),
-                                    spec = $(this).attr(':data-spec'),
-                                    factoryName = $(this).attr(':data-factoryName'),
-                                    productId = $(this).attr(':data-productId'),
-                                    spuCode = $(this).attr(':data-spuCode'),
-                                    productName = $(this).find('.shop_title').text(),
-                                    productPicUrl = $(this).find('.shop_img img').attr('src'),
-                                    vendorId = $(this).attr(':data-vendorId'),
-                                    vendorName = $(this).attr(':data-vendorName'),
-                                    shoppingCartId = $(this).attr(':data-shoppingCartId'),
-                                    datali = {
-                                        'spec': spec,
-                                        'spuCode': spuCode,
-                                        'factoryName': factoryName,
-                                        'productId': productId,
-                                        'productName': productName,
-                                        'productPicUrl': productPicUrl,
-                                        'productPrice': dj,
-                                        'quantity': sl,
-                                        'vendorId': vendorId,
-                                        'vendorName': vendorName,
-                                        'totalPrice': jr,
-                                        'shoppingCartId': shoppingCartId,
-                                    };
-                                CartIdList.push(datali.productId);
-                                data.products.push(datali);
-                                list.push(jr);
-                                fatoryjr += jr;
-                            });
-                            if (shopTips && fatoryjr >= parseFloat(minSalePrice)) {
-                                shopTips.hide();
-                            } else {
-                                shopTips.show();
-                            }
-                            shopListData.push(data);
-                            self.shopData.shopCartList = shopListData.filter(function(obj) {
-                                var count = parseFloat(obj.minSalePrice);
-                                var count1 = 0;
-                                obj.products.filter(function(obj) {
-                                    var priceCount = math.numMulti(obj.productPrice, obj.quantity);
-                                    count1 = math.numAdd(count1, priceCount);
-                                });
-                                if (count1 < count) {
-                                    obj.isOk = 0;
-                                    self.shop = false;
-                                }
-                                return obj.isOk == '1';
-                            });
-                            self.deleteData.shoppingCartIdList = CartIdList;
-                            self.$deleteBtn.removeClass('btn_disabled');
-
-                            if (shopListData.length > 0) {
-                                self.$submitBtn.removeClass('btn_disabled');
-                            } else {
-                                self.$submitBtn.addClass('btn_disabled');
-                            }
-                        } else {
-                            shopTips.show();
-                        }
-                    });
-                    for (var i = 0; i < list.length; i++) {
-                        var nub = parseFloat(list[i]);
-                        count = math.numAdd(count, nub);
-                        count = parseFloat(count);
-                    }
-                    self.totalMoney.text(self.toDecimal2(count));
-                }
-                self.shopKind.text(list.length);
-            },
-            submitAjax() {
-                var self = this;
-                if (self.shopLayer >= 0) {
-                    layer.close(self.shopLayer);
-                }
-                if (self.shopData.shopCartList.length > 0) {
-                    common.setLocalStorage('confirmationData', JSON.stringify(self.shopData));
-                    if (common.inWechat()) {
-                        window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx5ffc126c73788d14&redirect_uri=' + encodeURIComponent('http://m.yaoex.com/bind/confirmation.html') + '&response_type=code&scope=snsapi_base&state=234211213#wechat_redirect';
-                    } else {
-                        window.location.href = '/bind/confirmation.html';
-                    }
-                }
-            },
-            deleteBtnAjax() {
-                var self = this;
-                if (self.deleteLayer >= 0) {
-                    layer.close(self.deleteLayer);
-                }
-                if (self.AjaxTrue) {
-                    self.AjaxTrue = false;
-                    common.deleteShopCartAjax(self.deleteData, {
-                        func: function(data) {
-                            if (self.response.statusCode == 0) {
-                                self.contentAajax(true);
-                                console.log(self.deleteLayer)
-                            } else {
-                                common.msgShowDelay('删除失败', 3);
-                            }
-                        }
-                    }, self)
-                }
             },
             combinePromotionData(promotions) {
                 // 同时存在多品满赠和单品满赠, 只显示单品满赠
@@ -819,159 +489,18 @@
                     return promotionList;
                 }
             },
-            bindUI() {
-                var self = this;
-                self.$submitBtn = $('.btn_submit');
-                self.$deleteBtn = $('.btn_delete');
-                self.$edtorBtn = $('#btn_edtor');
-                self.$factoryBox = $('.factory_item');
-                self.shopeLi = $('.shop_li');
-                self.deleteShowBox = $('.consult');
-                self.deleteShowBox1 = $('.shop_kind');
-                self.totalMoney = $('.total_money');
-                self.shopKind = $('.shop_kind_count');
-                self.$btnCount = $('.shop_count').find('button');
-                self.factory_name = $(".factory_name");
-            },
-            bindEvent: function() {
-                var self = this;
-                //选择商品
-                var $checkItem = $('.checkitem'),
-                    $selectItem = $('.select_icon'),
-                    $checkAll = $('.factory_checkall'),
-                    $subtractBtn = $('.btn_left'),
-                    $addBtn = $('.btn_right'),
-                    $input_check = $('input[type="checkbox"]:not(#check_all)', '.container');
-                $checkItem.on('click', function(e) {
-                    self.countTextData();
-                    var $checkItems = $(this).parent().parent().parent().find('.checkitem'),
-                        $checkParent = $(this).parent().parent().parent().parent().parent().prev().find('.factory_checkall'),
-                        allCheck = true;
-                    if ($(this).is(':checked')) {
-                        $(this).parent().parent().addClass('shop_check_li');
-                    } else {
-                        $(this).parent().parent().removeClass('shop_check_li');
-                    }
-                    $checkItems.each(function() {
-                        if (!this.disabled && this.checked == false) {
-                            allCheck = false;
-                            return false;
-                        }
-                    });
-                    allCheck ? $checkParent.prop('checked', true) : $checkParent.prop('checked', false);
-                    self.addOrOtherClick($(this));
-                });
-                $checkAll.on('click', function(e) {
-
-                    var $checkItems = $(this).parents('.factory_item').find('.checkitem'),
-                        $shopLi = $(this).parents(".factory_item").find('.shop_li');
-                    isCheck = this.checked;
-
-                    $checkItems.each(function() {
-                        console.log(this.disabled)
-                        if (this.disabled) {
-                            return true
-                        };
-                        console.log(isCheck)
-                        this.checked = isCheck;
-                        isCheck ? $shopLi.addClass('shop_check_li') : $shopLi.removeClass('shop_check_li');
-                    });
-                    self.countTextData();
-                    self.addOrOtherClick($(this));
-                });
-                //全选
-                $input_check.on('click', function(e) {
-
-                    var isAllcheck = true;
-                    $('input[type="checkbox"]:not(#check_all)', '.container')
-                        .each(function(e) {
-                            if (!this.checked) {
-                                isAllcheck = false;
-                                return false;
-                            }
-                        });
-                    isAllcheck ? $('#check_all').prop('checked', true) : $('#check_all').prop('checked', false);
-                    self.countTextData();
-                });
-                $('#check_all').on('click', function(e) {
-
-                    var $input_check = $('input[type="checkbox"]', '.container');
-                    this.checked ? $input_check.prop('checked', true) : $input_check.prop('checked', false);
-                    this.checked ? self.shopeLi.addClass('shop_check_li') : self.shopeLi.removeClass('shop_check_li');
-                    self.countTextData();
-                });
-                $("body").on("click", ".factory_name", function() {
-                    let supplyId = $(this).attr("supplyId");
-                    window.location.href = '/shop.html?enterpriseId=' + supplyId;
-                });
-                self.$submitBtn.on('click', function() {
-                    if (!$(this).hasClass('btn_disabled')) {
-                        if (self.goShop) {
-                            if (!self.shop) {
-                                self.shopLayer = layer.open({
-                                    title: '提示',
-                                    content: '部分订单金额低于供应商的起售金额，这部分订单无法结算，是否继续？',
-                                    btn: ['确认', '取消'],
-                                    yes: function() {
-                                        console.log('1')
-                                        self.submitAjax();
-                                    }
-                                });
-                            } else {
-                                self.submitAjax();
-                            }
-                        }
-                    }
-                });
-                self.$deleteBtn.on('click', function() {
-                    self.countTextData();
-                    if (!$(this).hasClass('btn_disabled')) {
-                        self.deleteLayer = layer.open({
-                            title: '提示',
-                            content: '确定要删除商品吗',
-                            btn: ['确认', '取消'],
-                            yes: function() {
-                                self.deleteBtnAjax();
-                            }
-                        });
-                    }
-                });
-
-                //进入店铺主页
-                $('.shop_enter').on('click', function(e) {
-                    var promotionInfo = $(this).attr(':data-promotionInfoStr');
-                    var enterpriseId = $(this).attr(':data-enterpriseId');
-                    var promotionId = $(this).attr(':data-promotionId');
-                    if (promotionInfo) {
-                        common.setLocalStorage("ProductPromotionData", promotionInfo);
-                        window.location.href = 'shop.html?enterpriseId=' + enterpriseId + '&promotionId=' + promotionId;
-                    } else {
-                        common.setLocalStorage("ProductPromotionData", "");
-                        window.location.href = 'shop.html?enterpriseId=' + enterpriseId + '&promotionId=';
-                    }
-                });
-
-                //弹出规则弹出层
-                $(".rules").on("click", function() {
-                    $(".shopcar_rules").show();
-                    $(".mask").show();
-                });
-                $(".shop_colse,.mask").on("click", function() {
-                    $(".shopcar_rules").hide();
-                    $(".mask").hide();
-                });
-            },
             ...mapActions([
-                'changeFocus'
+                'changeFocus',
+                'setShopCarNum'
             ])
         },
         filters: {
             postage: function(s) {
                 var t = 0;
-                for(var i = 0;i < s.freighRuleList.length;i++){
-                        if(s.total-s.fullReductionMoney>=s.freighRuleList[i].downValue && s.total-s.fullReductionMoney <s.freighRuleList[i].upValue){
-								t =  s.freighRuleList[i].ruleValue;
-							}
+                for (var i = 0; i < s.freighRuleList.length; i++) {
+                    if (s.total - s.fullReductionMoney >= s.freighRuleList[i].downValue && s.total - s.fullReductionMoney < s.freighRuleList[i].upValue) {
+                        t = s.freighRuleList[i].ruleValue;
+                    }
                 }
                 return t
             },
@@ -1082,6 +611,7 @@
         top: 0;
         right: 0;
         left: 0;
+        z-index: 99;
     }
     
     header {
@@ -1314,6 +844,8 @@
                 -webkit-line-clamp: 2;
                 -webkit-box-orient: vertical;
                 span {
+                    float: left;
+                    margin-top: 3/@size;
                     display: inline-block;
                     font-weight: normal;
                     margin-right: 3/@size;
@@ -1566,5 +1098,32 @@
             float: right;
             color: #333;
         }
+    }
+    /*满减、特价、买赠公用效果*/
+    
+    .sale_type_tj {
+        position: relative;
+        padding-left: 33/@size;
+    }
+    
+    .sale_type_tj:before {
+        text-indent: 0;
+        width: 30/@size;
+        display: inline-block;
+        height: 14/@size;
+        color: #fff;
+        text-align: center;
+        border-radius: 2px;
+        font-weight: 100;
+        content: attr(data-type);
+        text-align: center;
+        background-image: linear-gradient(90deg, #80DEEA, #41CBDB);
+        position: absolute;
+        left: 0;
+        top: 3/@size;
+        width: 30/@size;
+        height: 14/@size;
+        font-size: 10/@size;
+        line-height: 16/@size;
     }
 </style>
