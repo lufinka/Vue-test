@@ -312,7 +312,7 @@
                </router-link>
            </div>
            <div class="cell">
-              <router-link to="/shopCar" class="car_num">
+              <router-link to="/shopcar" class="car_num">
                <svg class="icon" aria-hidden="true">
                         <use xlink:href="#icon-shopcar"></use>
                </svg>

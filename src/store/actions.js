@@ -11,6 +11,10 @@ export default {
     signOut({commit}){
         commit('signOut');
     },
+    //设置购物车数量
+    setShopCarNum({commit}, num){
+        commit('setShopCarNum', num);
+    },
     //获取购物车数量
     getShopCarNum({commit}, params){
         commit('getShopCarNum', params);

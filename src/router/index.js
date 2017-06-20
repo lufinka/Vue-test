@@ -14,6 +14,7 @@ const user = r => require.ensure([], () => r(require('@/pages/user/user.vue')), 
 const set = r => require.ensure([], () => r(require('@/pages/set/set.vue')), 'set');
 const about = r => require.ensure([], () => r(require('@/pages/about/about.vue')), 'about');
 const order= r => require.ensure([], () => r(require('@/pages/order/order.vue')), 'order');
+const car = r => require.ensure([], () => r(require('@/pages/shopcar/shopcar.vue')), 'car');
 
 const App = r => require.ensure([], () => r(require('@/App.vue')), 'App')
 const slide = r => require.ensure([], () => r(require('@/components/slide.vue')), 'common-home');
@@ -148,6 +149,10 @@ export default new Router({
             name: 'order',
             component: order
             },{
+            path: '/shopcar',
+            name: 'car',
+            component: car
+            }, {
             path: '*',
             component: error
             }]

@@ -45,6 +45,8 @@ var getProductDetail = (h, p) => fetch(!1, h, '/mall/api/product/getProductDetai
 var cartAccount = (h) => fetch(!1, h, '/order/api/cart/cartAccount'); //获取购物车数量
 var getUserTipInfo = (h) => fetch(!1, h, '/order/api/order/getUserTipInfo'); //个人中心
 var listOrder = (h, p) => fetch(true, h, '/order/api/order/listOrder', p); //订单数据
+var getShopCartList = (h) => fetch(!1, h, '/order/api/cart/getShopCartList'); //获取购物车详情
+var deleteShopCarts = (h, p) => fetch(!0, h, '/order/api/cart/deleteShopCarts', p); //购物车删除商品
 
 export {
     headers,
@@ -65,5 +67,7 @@ export {
     getProductDetail,
     cartAccount,
     getUserTipInfo,
-    listOrder
+    listOrder,
+    getShopCartList,
+    deleteShopCarts
 }

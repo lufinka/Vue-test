@@ -10,6 +10,9 @@ export default {
         state.username = '';
         state.password = '';
     },
+    setShopCarNum(state,num){
+        state.shopCarNum -= num;
+    },
     getShopCarNum(state, params) {
         params.fn(params.that).then((response) => {
             if (response.body.statusCode == 0) {
