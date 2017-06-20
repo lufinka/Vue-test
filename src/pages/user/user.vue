@@ -21,25 +21,25 @@
         <div class="four">
             <ul>
                 <li>
-                   <router-link to="/order">
+                   <router-link to="/order/dfk">
                     <h3>{{info.unPayNumber || 0}}</h3>
                     <p>待付款</p>
                     </router-link>
                 </li>
                 <li>
-                   <router-link to="/order">
+                   <router-link to="/order/dfh">
                     <h3>{{info.deliverNumber || 0}}</h3>
                     <p>待发货</p>
                     </router-link>
                 </li>
                 <li>
-                   <router-link to="/order">
+                   <router-link to="/order/dsh">
                     <h3>{{info.reciveNumber || 0}}</h3>
                     <p>待收货</p>
                     </router-link>
                 </li>
                 <li>
-                   <router-link to="/order">
+                   <router-link to="/order/jsbh">
                     <h3>{{info.unRejRep || 0}}</h3>
                     <p>拒收&#92;补货</p>
                     </router-link>
