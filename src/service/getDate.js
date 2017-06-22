@@ -46,6 +46,7 @@ var cartAccount = (h) => fetch(!1, h, '/order/api/cart/cartAccount'); //获取�
 var getUserTipInfo = (h) => fetch(!1, h, '/order/api/order/getUserTipInfo'); //个人中心
 var getShopCartList = (h) => fetch(!1, h, '/order/api/cart/getShopCartList'); //获取购物车详情
 var deleteShopCarts = (h, p) => fetch(!0, h, '/order/api/cart/deleteShopCarts', p); //购物车删除商品
+var listCategory = (h) => fetch(!1, h, '/manage/api/self/listCategory'); //商品分类
 
 export {
     headers,
@@ -67,5 +68,6 @@ export {
     cartAccount,
     getUserTipInfo,
     getShopCartList,
-    deleteShopCarts
+    deleteShopCarts,
+    listCategory
 }

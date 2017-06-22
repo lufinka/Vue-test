@@ -12,7 +12,7 @@
                 </router-link>
             </li>
             <li :class="{on:focus == 1}">
-                <router-link to="/search">
+                <router-link to="/classify">
                     <h2>
                     <svg class="icon search_list" aria-hidden="true">
                         <use xlink:href="#icon-search_list"></use>
