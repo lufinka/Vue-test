@@ -44,6 +44,7 @@ var queryDrugByPageForAll = (h, p) => fetch(!0, h, '/mall/api/experiment/queryDr
 var getProductDetail = (h, p) => fetch(!1, h, '/mall/api/product/getProductDetail', p); //商品详细信息
 var cartAccount = (h) => fetch(!1, h, '/order/api/cart/cartAccount'); //获取购物车数量
 var getUserTipInfo = (h) => fetch(!1, h, '/order/api/order/getUserTipInfo'); //个人中心
+var listOrder = (h, p) => fetch(true, h, '/order/api/order/listOrder', p); //订单数据
 var getShopCartList = (h) => fetch(!1, h, '/order/api/cart/getShopCartList'); //获取购物车详情
 var deleteShopCarts = (h, p) => fetch(!0, h, '/order/api/cart/deleteShopCarts', p); //购物车删除商品
 var listCategory = (h) => fetch(!1, h, '/manage/api/self/listCategory'); //商品分类
@@ -67,6 +68,7 @@ export {
     getProductDetail,
     cartAccount,
     getUserTipInfo,
+    listOrder,
     getShopCartList,
     deleteShopCarts,
     listCategory

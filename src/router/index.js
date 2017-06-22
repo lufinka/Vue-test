@@ -13,6 +13,7 @@ const info = r => require.ensure([], () => r(require('@/pages/info/info.vue')), 
 const user = r => require.ensure([], () => r(require('@/pages/user/user.vue')), 'user');
 const set = r => require.ensure([], () => r(require('@/pages/set/set.vue')), 'set');
 const about = r => require.ensure([], () => r(require('@/pages/about/about.vue')), 'about');
+const order= r => require.ensure([], () => r(require('@/pages/order/order.vue')), 'order');
 const car = r => require.ensure([], () => r(require('@/pages/shopcar/shopcar.vue')), 'car');
 const classify = r => require.ensure([], () => r(require('@/pages/classify/classify.vue')), 'classify');
 
@@ -36,7 +37,7 @@ const c = r => require.ensure([], () => r(require('@/components/c.vue')), 'c');
 Vue.use(Router)
 
 export default new Router({
-    mode: 'history',
+    mode: 'hash',
     routes: [{
         path: '/',
         component: App,
@@ -145,6 +146,10 @@ export default new Router({
             name: 'user',
             component: user
             }, {
+            path: '/order/:type',
+            name: 'order',
+            component: order
+            },{
             path: '/shopcar',
             name: 'car',
             component: car
