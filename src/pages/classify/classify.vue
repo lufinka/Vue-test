@@ -8,6 +8,7 @@
         <div class="classify" v-if="category.length">
             <div class="classify-tab ui_verscrollpl">
                 <div class="cont">
+                   <i :style="{'top':top}"></i>
                     <ul>
                         <li @click="tabs(index)" v-for="(value,index) in category" :key="index" :class="{'active':index == clicked}">{{value.categoryName}}</li>
                     </ul>
@@ -63,7 +64,8 @@
             return {
                 ready: !1,
                 category: [],
-                clicked: 0
+                clicked: 0,
+                top:0
             }
         },
         created() {
@@ -77,6 +79,7 @@
         methods: {
             tabs(i) {
                 this.clicked = i;
+                this.top = i*62/37.5+'rem';
             },
             getcategory() {
                 listCategory(this).then((response) => {
@@ -143,10 +146,21 @@
         right: 0;
         bottom: 55/@size;
         &-tab {
+            position: relative;
             float: left;
             width: 88/@size;
             background-color: #fff;
             height: 100%;
+            i {
+                transition: .218s all linear .1s;
+                display: block;
+                position: absolute;
+                background-color: #FE403B;
+                top: 0;
+                left: 0;
+                height: 62/@size;
+                width: 2px;
+            }
             li {
                 float: left;
                 height: 62/@size;
@@ -159,7 +173,6 @@
                 &:active,
                 &.active {
                     border-bottom: 1px solid #fff;
-                    border-left: 2px solid #FE403B;
                     background-color: #f8f8f8;
                 }
             }
@@ -197,14 +210,14 @@
         background-color: #fff;
         position: relative;
         padding-bottom: 18/@size;
-        ul{
+        ul {
             max-height: 90/@size;
-         transition: .218s all;
-         overflow: hidden;
-            &.maxHeight{
+            transition: .218s all;
+            overflow: hidden;
+            &.maxHeight {
                 max-height: inherit;
             }
-            }
+        }
         &:after {
             content: "";
             display: table;
@@ -262,9 +275,8 @@
             left: 50%;
             margin-left: -30/@size;
             bottom: -15/@size;
-                transition: .218s all;
             i {
-                transition: .218s all;
+                transition: .218s all linear .218s;
                 width: 20/@size;
                 height: 20/@size;
                 margin: 5/@size 0 0 20/@size;
