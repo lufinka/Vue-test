@@ -16,6 +16,8 @@ const about = r => require.ensure([], () => r(require('@/pages/about/about.vue')
 const order= r => require.ensure([], () => r(require('@/pages/order/order.vue')), 'order');
 const car = r => require.ensure([], () => r(require('@/pages/shopcar/shopcar.vue')), 'car');
 const classify = r => require.ensure([], () => r(require('@/pages/classify/classify.vue')), 'classify');
+const manage = r => require.ensure([], () => r(require('@/pages/address/manage.vue')), 'manage');
+const edit = r => require.ensure([], () => r(require('@/pages/address/edit.vue')), 'edit');
 
 const App = r => require.ensure([], () => r(require('@/App.vue')), 'App')
 const slide = r => require.ensure([], () => r(require('@/components/slide.vue')), 'common-home');
@@ -157,7 +159,15 @@ export default new Router({
             path: '/classify',
             name: 'classify',
             component: classify
+            },{
+            path: '/vmanage',
+            name: 'manage',
+            component: manage
             }, {
+            path: '/edit',
+            name: 'edit',
+            component: edit
+            },  {
             path: '*',
             component: error
             }]

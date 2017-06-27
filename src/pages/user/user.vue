@@ -50,7 +50,7 @@
     <div class="into-list">
         <ul>
             <li>
-               <router-link to="/address">
+               <router-link to="/vmanage">
                   <i class="address"></i>
                    <p>收货地址</p>
                    <span></span>

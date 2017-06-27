@@ -48,6 +48,7 @@ var listOrder = (h, p) => fetch(true, h, '/order/api/order/listOrder', p); //订
 var getShopCartList = (h) => fetch(!1, h, '/order/api/cart/getShopCartList'); //获取购物车详情
 var deleteShopCarts = (h, p) => fetch(!0, h, '/order/api/cart/deleteShopCarts', p); //购物车删除商品
 var listCategory = (h) => fetch(!1, h, '/manage/api/self/listCategory'); //商品分类
+var getReceiverAddressList = (h) => fetch(!1, h, '/usermanage/api/enterpriseInfo/getReceiverAddressList'); //获取收货地址
 
 export {
     headers,
@@ -71,5 +72,6 @@ export {
     listOrder,
     getShopCartList,
     deleteShopCarts,
-    listCategory
+    listCategory,
+    getReceiverAddressList
 }

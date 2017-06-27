@@ -14,5 +14,9 @@ export default {
     //购物车数量
     shopCarNum(state) {
         return state.shopCarNum;
+    },
+    //收货地址
+    address(state) {
+        return state.address;
     }
 }

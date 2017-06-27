@@ -18,5 +18,13 @@ export default {
     //获取购物车数量
     getShopCarNum({commit}, params){
         commit('getShopCarNum', params);
+    },
+    //设置收货地址
+    setAddress({commit}, num,obj){
+        commit('setAddress', num,obj);
+    },
+    //获取收货地址
+    getAddress({commit}, params){
+        commit('getAddress', params);
     }
 };

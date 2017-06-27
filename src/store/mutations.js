@@ -21,5 +21,17 @@ export default {
                 state.shopCarNum = 0;
             }
         })
+    },
+    setAddress(state,num,obj){
+        state.adderss[num] = obj;
+    },
+    getAddress(state, params) {
+        params.fn(params.that).then((response) => {
+            if (response.body.statusCode == 0) {
+                state.adderss = response.body.data;
+            } else {
+                state.adderss = [];
+            }
+        })
     }
 }

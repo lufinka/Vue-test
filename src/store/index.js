@@ -10,6 +10,7 @@ const state = {
 	username: '', // 用户名
 	password: '', // 密码
     focus:0,      //footer选中
+    address:[],      //收货地址
     shopCarNum:0  //购物车数量
 }
 
