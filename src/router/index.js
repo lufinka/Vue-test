@@ -37,7 +37,7 @@ const c = r => require.ensure([], () => r(require('@/components/c.vue')), 'c');
 Vue.use(Router)
 
 export default new Router({
-    mode: 'hash',
+    mode: 'history',
     routes: [{
         path: '/',
         component: App,
@@ -146,7 +146,7 @@ export default new Router({
             name: 'user',
             component: user
             }, {
-            path: '/order/:type',
+            path: '/vorder/:type',
             name: 'order',
             component: order
             },{

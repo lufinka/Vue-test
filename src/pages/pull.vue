@@ -14,7 +14,7 @@
       <div class="promotion-cont" ref="wrapper" :style="{ height: wrapperHeight + 'px' }">
         <mt-loadmore :bottom-method="loadBottom" :autoFill="isfill"  @bottom-status-change="handleBottomChange" :bottom-all-loaded="allLoaded[index]" ref="loadmore">
          <ul>
-             <li v-for="(p,index) in item" :key="index">
+             <li v-for="(p,n) in item" :key="index">
                   {{item[index]}}
              </li>
          </ul>
@@ -78,7 +78,7 @@
                 isfill:false,
                 active: 'tab-container1',
                 nowIndex: 0,
-                allLoaded: [!1,!1,!1,],
+                allLoaded: [!1,!1,!1],
                 limmit: [5, 50, 60],
                 pageNow: [1, 1, 1],
                 wrapperHeight: 0,
@@ -115,7 +115,7 @@
         },
         methods: {
             getData(num) {
-                for (let i = 1; i <= 5; i++) {
+                for (let i = 1; i <= 10; i++) {
                     this.promotionList[num].push(i);
                 }
             },
@@ -123,8 +123,7 @@
                 this.bottomStatus[this.nowIndex] = status;
             },
             loadBottom() {
-                
-                    console.log(this.nowIndex)
+                console.log(1)
                 setTimeout(() => {
                     console.log(this.$refs.loadmore[this.nowIndex])
                     let lastValue = this.promotionList[this.nowIndex].length;

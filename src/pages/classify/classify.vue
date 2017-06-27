@@ -167,7 +167,7 @@
                 width: 88/@size;
                 border-bottom: 1px solid #f8f8f8;
                 border-left: 2px solid #fff;
-                transition: .218s all;
+                transition: .1s all;
                 line-height: 62/@size;
                 text-align: center;
                 &:active,
@@ -341,6 +341,10 @@
                     text-align: center;
                     float: left;
                     width: 33.3333%;
+                    transition: .1s all;
+                &:active {
+                    background-color: #f8f8f8;
+                }
                     img {
                         width: 60/@size;
                         height: 60/@size;
