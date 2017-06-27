@@ -2,62 +2,50 @@
 	<div class="order">
 		<v-header :title="title"></v-header>
 		<div class="order-tab">
-			<router-link v-for="(item,index) in tabs" :class="{'actived':active=='tab-container'+index}" to="" :key="index" v-on:click.native.stop.prevent="changeOrder(index)">{{item}}</router-link>
+			<router-link v-for="(item,index) in tabs" :class="{'actived':active=='tab-container'+index}" to="" :key="index" v-on:click.native.stop.prevent="active = 'tab-container'+(index)">{{item}}</router-link>
 		</div>	
 		<p class="tip">温馨提示：账期支付请去电脑端查看</p>
-		<mt-tab-container v-model="active">
-			<mt-tab-container-item id="tab-container0">
-				<div class="page-loadmore-wrapper" ref="wrapper" :style="{ height: wrapperHeight + 'px' }">
-					<mt-loadmore :auto-fill="isfill"  :bottom-method="loadBottom" @bottom-status-change="handleBottomChange" :bottom-all-loaded="allLoaded" ref="loadmore">
+		<mt-tab-container v-model="active"> 
+			<mt-tab-container-item v-for = "(item,index) in allOrderList" :key="index" :id="'tab-container'+index">
+				<div class="promotion-cont" ref="wrapper" :style="{ height: wrapperHeight + 'px' }">
+					<mt-loadmore :auto-fill="isfill"  :bottom-method="loadBottom" @bottom-status-change="handleBottomChange" :bottom-all-loaded="allLoaded[index]" ref="loadmore">
 				        <ul>
-				    		<li v-for="(item,index) in orderList">
+				    		<li v-for="(v,key) in item" :key="index">
 				    			<div class="head">
-				    				<span class="fl" v-text="item.supplyName"></span>
-				    				<span class="fr" v-text="item.orderStatusName"></span>
+				    				<span class="fl" v-text="v.supplyName"></span>
+				    				<span class="fr" v-text="v.orderStatusName"></span>
 				    			</div>
 				    			<div class="box">
-				    				<p v-for="(data,index) in item.productList">
+				    				<p v-for="(data,index) in v.productList">
 				    					<img :src="data.productPicUrl" />
 				    				</p>
 				    			</div>
 				    			<p class="price">
-				    				{{item.varietyNumber}}个品种共{{item.productNumber}}件商品
-				    				<span>合计：<i>￥{{item.finalPay | priceFn}}</i></span>
+				    				{{v.varietyNumber}}个品种共{{v.productNumber}}件商品
+				    				<span>合计：<i>￥{{v.finalPay | priceFn}}</i></span>
 				    			</p>
 				    		</li>
 				    	</ul>
 				        <div slot="bottom" class="mint-loadmore-bottom">
-				          <span v-show="bottomStatus !== 'loading'" :class="{ 'is-rotate': bottomStatus === 'drop' }">↑</span>
-				          <span v-show="bottomStatus === 'loading'">
+				          <span v-show="bottomStatus[index] !== 'loading'" :class="{ 'is-rotate': bottomStatus[index] === 'drop' }">↑</span>
+				          <span v-show="bottomStatus[index] === 'loading'">
 				            <mt-spinner type="snake"></mt-spinner>
 				          </span>
 				        </div>
 			     	</mt-loadmore>
 				</div>
 		  	</mt-tab-container-item>
-			<mt-tab-container-item id="tab-container1">
-			    21
-			</mt-tab-container-item>
-			<mt-tab-container-item id="tab-container2">
-			    21
-			</mt-tab-container-item>
-			<mt-tab-container-item id="tab-container3">
-			    21
-			</mt-tab-container-item>
-			<mt-tab-container-item id="tab-container4">
-				2121
-			</mt-tab-container-item>
 		</mt-tab-container>
 	</div>
 </template>
 <script>
 import header from '@/components/header';
 import {
-	TabContainer,
-	TabContainerItem,
-	InfiniteScroll,
-	Indicator, 
-	Loadmore
+	Toast,
+    Loadmore,
+    TabContainer,
+    TabContainerItem,
+    Indicator
 } from "mint-ui";
 import {
     headers
@@ -68,13 +56,22 @@ export default{
 			title:"我的订单",
 			type:'',
 			orderList:[],
-			pageNo:1,
+			allOrderList:[
+				[],
+				[],
+				[],
+				[],
+				[]
+			],
+			orderStatus:0,
+			pageNo:[1,1,1,1,1],//页码
+			limit:[0,0,0,0,0],//总页码
 			index:1,
-			allLoaded: false,
-        	bottomStatus: '',
+			nowindex:1,
+			allLoaded:[false,false,false,false,false],//是否允许加载
+        	bottomStatus:['','','','',''],
         	isfill:false,
         	wrapperHeight: 0,
-			bottomText:'上拉加载更多...',
 			totalCount:'',
 			active:'tab-container0',
 			tabs:["全部","待付款","待发货","待收货","已完成"]
@@ -101,30 +98,36 @@ export default{
 	},
 	created(){
 		//获取全部订单
-		this.allOrder(0,this.index);
+		this.allOrder(0);
 	},
 	methods:{
-		changeOrder:function(index){
-			this.active='tab-container'+index;
-			
-		},
-		allOrder:function(v,index){
+		allOrder:function(num){
 			this.$http.post("/order/api/order/listOrder",{
-				"pageNo":index,
-				"pageSize":2,
+				"pageNo":this.pageNo[num],
+				"pageSize":3,
 				"param":{
-					"orderStatus":v
+					"orderStatus":this.orderStatus
 				}
 			},{
 				"headers":headers
 			}).then((reponse)=>{
-				this.orderList = reponse.body.data.orderList
+				if(reponse.body.statusCode == 0){
+					this.limit[num] = reponse.body.data.pageCount;
+					for(var i=0;i<reponse.body.data.orderList.length;i++){
+						this.allOrderList[num].push(reponse.body.data.orderList[i]);
+					}
+				}else{
+					Toast({
+						message: response.body.message,
+                        position: 'center',
+                        duration: 2000
+					});
+				}
 			},(error)=>{
-				
 			});
 		},
 		handleBottomChange(status) {
-	        this.bottomStatus = status;
+	        this.bottomStatus[this.nowIndex] = status;
 	    },
 	    loadBottom() {
 	        setTimeout(() => {
@@ -134,7 +137,7 @@ export default{
 	    }
 	},
     mounted() {
-      this.wrapperHeight = document.documentElement.clientHeight - this.$refs.wrapper.getBoundingClientRect().top;
+      this.wrapperHeight = document.documentElement.clientHeight - this.$refs.wrapper[0].getBoundingClientRect().top;
     },
 	components:{
 		'v-header':header
@@ -148,6 +151,7 @@ body{
 	background:@bodycolor;
 }
 	ul{
+		overflow: hidden;
 		li{
 			padding: 0 10/@size 40/@size 10/@size;
 			background: #fff;
@@ -178,11 +182,25 @@ body{
 				text-align: center;
 				line-height: 50/@size;
 				height: 50/@size;
-				border-bottom: 3px solid #fff;
+				position:relative; 
+				&:before{
+					content: "";
+					bottom:0;
+					width: 100%;
+					transition: all .218s linear;
+					height: 3px;
+					transform: rotateY(90deg);
+					left: 0;
+					background: #fff;
+					position: absolute;
+				}
 			}
 			a.actived{
 				color:#fe6862;
-				border-bottom: 3px solid #fe6862;
+				&:before{
+					background: #fe6862;
+					transform: rotateY(0);
+				}
 			}
 		}
 	}

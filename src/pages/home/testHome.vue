@@ -128,7 +128,7 @@
             getData(num) {
                 Indicator.open();
                 queryDrugByPageForAll(this, {
-                    siteCode: '420000',
+                    siteCode: '000000',
                     promotionType: this.promotionType,
                     pageIndex: this.pageNow[num],
                     pageSize: 5
