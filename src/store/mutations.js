@@ -10,7 +10,7 @@ export default {
         state.username = '';
         state.password = '';
     },
-    setShopCarNum(state,num){
+    setShopCarNum(state, num) {
         state.shopCarNum -= num;
     },
     getShopCarNum(state, params) {
@@ -22,13 +22,20 @@ export default {
             }
         })
     },
-    setAddress(state,num,obj){
+    setAddress(state, num, obj) {
         state.adderss[num] = obj;
+    },
+    deleteAddress(state, num){
+        state.address.splice(num,1);
     },
     getAddress(state, params) {
         params.fn(params.that).then((response) => {
+            var data = response.body.data;
             if (response.body.statusCode == 0) {
-                state.adderss = response.body.data;
+                state.address.splice(0,state.address.length);
+                for (var i = 0; i < data.length; i++) {
+                    state.address.push(data[i]);
+                }
             } else {
                 state.adderss = [];
             }

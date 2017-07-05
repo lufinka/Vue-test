@@ -1,30 +1,33 @@
 export default {
     //设置footer当前状态
-    changeFocus({commit}, num){
+    changeFocus({ commit }, num) {
         commit('changeFocus', num);
     },
     //设置登陆账号密码
-    setUser({commit}, params){
+    setUser({ commit }, params) {
         commit('setUser', params);
     },
     //退出登录
-    signOut({commit}){
+    signOut({ commit }) {
         commit('signOut');
     },
     //设置购物车数量
-    setShopCarNum({commit}, num){
+    setShopCarNum({ commit }, num) {
         commit('setShopCarNum', num);
     },
     //获取购物车数量
-    getShopCarNum({commit}, params){
+    getShopCarNum({ commit }, params) {
         commit('getShopCarNum', params);
     },
     //设置收货地址
-    setAddress({commit}, num,obj){
-        commit('setAddress', num,obj);
+    setAddress({ commit }, num, obj) {
+        commit('setAddress', num, obj);
+    },//删除收货地址
+    deleteAddress({ commit }, num) {
+        commit('deleteAddress', num);
     },
     //获取收货地址
-    getAddress({commit}, params){
+    getAddress({ commit }, params) {
         commit('getAddress', params);
     }
 };

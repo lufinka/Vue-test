@@ -164,7 +164,7 @@ export default new Router({
             name: 'manage',
             component: manage
             }, {
-            path: '/edit',
+            path: '/edit/:index',
             name: 'edit',
             component: edit
             },  {

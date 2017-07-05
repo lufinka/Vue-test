@@ -154,7 +154,7 @@
     }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
     @size : 37.5rem;
     body {
         background-color: #f8f8f8;
