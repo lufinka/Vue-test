@@ -981,7 +981,7 @@
         height: 45/@size;
         line-height: 45/@size;
         padding-right: 15/@size;
-        background: #f8f8f8;
+        background: #f3eeee;
         display: flex;
         align-items: center;
         justify-content: space-between;

@@ -1,7 +1,7 @@
 <template>
     <div class="edit">
         <v-header :title="title"></v-header>
-        <div class="field" v-if="address.length">
+        <div class="field" v-if="index > -1 && index < 999">
             <div class="input" data-text="收货人:">
                 <input type="text" v-model="address[index].receiverName">
             </div>
@@ -16,7 +16,7 @@
             <div class="input" data-text="详细地址:">
                 <textarea name="" id="" cols="30" rows="10" v-model="address[index].address"></textarea>
             </div>
-            <div class="saveauto" v-if="address[index].defaultAddress == 1">
+            <div class="saveauto" v-if="address[index].defaultAddress == 0">
                 <div class="cell">
                     <h2>设为默认地址</h2>
                     <p>注：每次下单时会使用该地址（轻松购下单除外）</p>
@@ -26,10 +26,26 @@
                 </div>
             </div>
         </div>
+        <div class="field" v-else>
+            <div class="input" data-text="收货人:">
+                <input type="text" v-model="vreceiverName">
+            </div>
+            <div class="input" data-text="手机号:">
+                <input type="number" v-model="vcontactPhone">
+            </div>
+            <div class="input" @click="choseArea" data-text="所在地区:">
+                <div class="into area">
+                    {{ addressProvince }} {{ addressCity }} {{ addressArea }}
+                </div>
+            </div>
+            <div class="input" data-text="详细地址:">
+                <textarea name="" id="" cols="30" rows="10" v-model="vtaddress"></textarea>
+            </div>
+        </div>
         <div class="save-address">
-            <router-link to="/edit/9999">
+            <button type="button" @click="save">
                 保存
-            </router-link>
+            </button>
         </div>
     
         <transition name="toggle-cart">
@@ -46,21 +62,27 @@
 </template>
 
 <script>
-import { Switch, Picker } from 'mint-ui';
+import { Switch, Picker, Toast } from 'mint-ui';
 import {
     mapGetters,
     mapActions
 } from 'vuex';
 import header from '@/components/header';
 import s from '@/service/city.js';
-console.log(s, 1245656)
+import {
+    headers,
+    getReceiverAddressList
+} from '@/service/getDate';
 export default {
     data() {
         return {
-            index: -1,
-            ishow: !1,
+            index: -1,//当前编辑地址初始值
+            ishow: !1, //城市选择toggle控制
+            vreceiverName: '',//收货人
+            vcontactPhone: '',//手机号
+            vtaddress: '',//详细地址
             title: '编辑收货地址',
-            switchValue: !1,
+            switchValue: !1,//默认地址
             addressSlots: [
                 {
                     flex: 1,
@@ -94,20 +116,29 @@ export default {
                 className: 'slot1'
             }],
             oPicker: {},
-            addressProvince: '',
-            addressCity: '',
-            addressArea: '',
+            addressProvince: '北京市',
+            addressCity: '市辖区',
+            addressArea: '东城区',
+        }
+    },
+    watch: {
+        switchValue: function (v) {
+            if (v) {
+                this.saveAuto();
+            }
         }
     },
     computed: mapGetters([
         'address'
     ]),
     created() {
+        this.getDate();
         this.index = this.$route.params.index;
-        this.addressProvince = this.address[this.index].provinceName;
-        this.addressCity = this.address[this.index].cityName;
-        this.addressArea = this.address[this.index].districtName;
-        console.log(this.oPicker)
+        if (this.index > -1 && this.index < 999) {
+            this.addressProvince = this.address[this.index].provinceName;
+            this.addressCity = this.address[this.index].provinceName;
+            this.addressArea = this.address[this.index].provinceName;
+        }
     },
     components: {
         'v-header': header
@@ -127,10 +158,139 @@ export default {
         onCityChange(picker, values) {
             console.log(values)
         },
+        saveAuto() {
+            var self = this;
+            this.$http.post('/usermanage/api/enterpriseInfo/updDefReceiverAddress', { id: this.address[this.index].id }, {
+                headers: headers
+            }).then((response) => {
+                console.log(response)
+                Toast({
+                    message: response.body.data.message,
+                    position: 'bottom',
+                    duration: 2000
+                });
+            }, (error) => {
+                Toast({
+                    message: error,
+                    position: 'bottom',
+                    duration: 2000
+                });
+            });
+            setTimeout(function () {
+                self.$router.go(-1);
+            }, 2000);
+        },
         choseArea() {
             this.ishow = !0;
+        }, save() {
+            var self = this;
+            //Change
+            if (this.index > -1 && this.index < 999) {
+                if (self.address[this.index].receiverName == '') {
+                    this.$toast({
+                        message: '收货人不能为空',
+                        position: 'bottom',
+                        duration: 1000
+                    });
+                } else if (self.address[this.index].contactPhone == "" || !(/^(0|86|17951)?(13[0-9]|15[012356789]|18[0-9]|14[57]|17[678])[0-9]{8}$/.test(self.address[this.index].contactPhone))) {
+                    this.$toast({
+                        message: '请输入正确的手机号码',
+                        position: 'bottom',
+                        duration: 1000
+                    });
+                } else if (self.address[this.index].address == "") {
+                    this.$toast({
+                        message: '详细地址不能为空',
+                        position: 'bottom',
+                        duration: 1000
+                    });
+                } else {
+                    var obj = { "address": self.address[this.index].address, id: self.address[this.index].id, "receiverName": self.address[this.index].receiverName, "provinceCode": "", "cityCode": "", "districtCode": "", "provinceName": self.addressProvince, "cityName": self.addressCity, "districtName": self.addressArea, "contactPhone": self.address[this.index].contactPhone, "defaultAddress": this.switchValue ? '0' : 1 }
+                    this.$http.post('/usermanage/api/enterpriseInfo/updateReceiverAddress', obj, {
+                        headers: headers
+                    }).then((response) => {
+                        console.log(response)
+                        Toast({
+                            message: response.body.data.message,
+                            position: 'bottom',
+                            duration: 2000
+                        });
+                    }, (error) => {
+                        Toast({
+                            message: error,
+                            position: 'bottom',
+                            duration: 2000
+                        });
+                    });
+
+                    setTimeout(function () {
+                        self.$router.go(-1);
+                    }, 2000);
+                }
+                //Add One
+            } else {
+                if (self.vreceiverName == '') {
+                    this.$toast({
+                        message: '收货人不能为空',
+                        position: 'bottom',
+                        duration: 1000
+                    });
+                } else if (self.vcontactPhone == ""  || !(/^(0|86|17951)?(13[0-9]|15[012356789]|18[0-9]|14[57]|17[678])[0-9]{8}$/.test(self.vcontactPhone))) {
+                    this.$toast({
+                        message: '请输入正确的手机号码',
+                        position: 'bottom',
+                        duration: 1000
+                    });
+                } else if (self.vtaddress == "") {
+                    this.$toast({
+                        message: '详细地址不能为空',
+                        position: 'bottom',
+                        duration: 1000
+                    });
+                } else {
+                    var obj = { "address": self.vtaddress, "receiverName": self.vreceiverName, "provinceCode": "", "cityCode": "", "districtCode": "", "provinceName": self.addressProvince, "cityName": self.addressCity, "districtName": self.addressArea, "contactPhone": self.vcontactPhone, "defaultAddress": self.switchValue ? '0' : 1 };
+                    this.$http.post('/usermanage/api/enterpriseInfo/saveReceiverAddress', obj, {
+                        headers: headers
+                    }).then((response) => {
+                        console.log(response)
+                        Toast({
+                            message: response.body.data.message,
+                            position: 'bottom',
+                            duration: 2000
+                        });
+                    }, (error) => {
+                        Toast({
+                            message: error,
+                            position: 'bottom',
+                            duration: 2000
+                        });
+                    });
+
+                    setTimeout(function () {
+                        self.$router.go(-1);
+                    }, 2000);
+                }
+            }
+        },
+        ...mapActions([
+            'getAddress'
+        ]),
+        getDate() {
+            this.getAddress({
+                fn: getReceiverAddressList,
+                that: this
+            });
         }
     }, mounted() {
+        if (this.index > -1 && this.index < 999) {
+            this.addressProvince = this.address[this.index].provinceName;
+            this.addressCity = this.address[this.index].cityName;
+            this.addressArea = this.address[this.index].districtName;
+
+            this.oPicker.setSlotValue(0, this.addressProvince);
+            this.oPicker.setSlotValue(1, this.addressCity);
+            this.oPicker.setSlotValue(2, this.addressArea);
+        }
         this.$nextTick(() => {
             setTimeout(() => {//这个是一个初始化默认值的一个技巧
                 this.addressSlots[0].defaultIndex = 0;
@@ -186,7 +346,8 @@ export default {
         text-align: center;
         position: relative;
         &:before {
-            width: 32/@size;;
+            width: 32/@size;
+            ;
             height: 1px;
             content: "";
             position: absolute;
@@ -200,7 +361,8 @@ export default {
             -moz-transform: rotate(155deg);
         }
         &:after {
-            width: 32/@size;;
+            width: 32/@size;
+            ;
             height: 1px;
             content: "";
             position: absolute;
@@ -266,7 +428,7 @@ export default {
 .save-address {
     padding: 10/@size;
     margin-top: 30/@size;
-    a {
+    button {
         width: 100%;
         padding: 10/@size 0;
         background-image: linear-gradient(-180deg, #F84A73 0%, #FF3C4C 100%);
@@ -275,10 +437,6 @@ export default {
         border-radius: 2px;
         text-align: center;
         font-size: 15/@size;
-        i {
-            margin-right: 6/@size;
-            font-style: normal
-        }
     }
 }
 </style>

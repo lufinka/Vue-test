@@ -50,6 +50,9 @@ var deleteShopCarts = (h, p) => fetch(!0, h, '/order/api/cart/deleteShopCarts', 
 var listCategory = (h) => fetch(!1, h, '/manage/api/self/listCategory'); //商品分类
 var getReceiverAddressList = (h) => fetch(!1, h, '/usermanage/api/enterpriseInfo/getReceiverAddressList'); //获取收货地址
 var deleteReceiverAddress = (h,p) => fetch(!0, h, '/usermanage/api/enterpriseInfo/deleteReceiverAddress',p); //刪除收货地址
+var saveReceiverAddress = (h,p) => fetch(!0, h, '/usermanage/api/enterpriseInfo/saveReceiverAddress',p); //保存新增收货地址
+var updateReceiverAddress = (h,p) => fetch(!0, h, '/usermanage/api/enterpriseInfo/updateReceiverAddress',p); //修改收货地址
+var updDefReceiverAddress = (h,p) => fetch(!0, h, '/usermanage/api/enterpriseInfo/updDefReceiverAddress',p); //设置默认收货地址
 
 export {
     headers,
@@ -75,5 +78,8 @@ export {
     deleteShopCarts,
     listCategory,
     getReceiverAddressList,
-    deleteReceiverAddress
+    deleteReceiverAddress,
+    saveReceiverAddress,
+    updateReceiverAddress,
+    updDefReceiverAddress
 }
