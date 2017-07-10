@@ -14,32 +14,32 @@
     </section>
     <section class="myOrder">
         <div class="all">
-            <router-link to="/order">
+            <router-link to="/vorder/dfk">
                 全部订单<span></span>
             </router-link>
         </div>
         <div class="four">
             <ul>
                 <li>
-                   <router-link to="/order/dfk">
+                   <router-link to="/vorder/dfk">
                     <h3>{{info.unPayNumber || 0}}</h3>
                     <p>待付款</p>
                     </router-link>
                 </li>
                 <li>
-                   <router-link to="/order/dfh">
+                   <router-link to="/vorder/dfh">
                     <h3>{{info.deliverNumber || 0}}</h3>
                     <p>待发货</p>
                     </router-link>
                 </li>
                 <li>
-                   <router-link to="/order/dsh">
+                   <router-link to="/vorder/dsh">
                     <h3>{{info.reciveNumber || 0}}</h3>
                     <p>待收货</p>
                     </router-link>
                 </li>
                 <li>
-                   <router-link to="/order/jsbh">
+                   <router-link to="/vorder/jsbh">
                     <h3>{{info.unRejRep || 0}}</h3>
                     <p>拒收&#92;补货</p>
                     </router-link>
