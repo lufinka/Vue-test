@@ -15,9 +15,6 @@
 
 <script>
     import {
-        Toast
-    } from 'mint-ui';
-    import {
         getLocalStorage,
         setLocalStorage
     } from '../service/tool.js';
@@ -59,7 +56,7 @@
                         setLocalStorage('stationName',this.area);
                     }
                 }, (error) => {
-                    Toast({
+                    this.$toast({
                         message: error,
                         position: 'bottom',
                         duration: 2000

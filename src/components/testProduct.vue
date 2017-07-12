@@ -97,10 +97,6 @@
 
 <script>
     import {
-        Toast,
-        MessageBox
-    } from 'mint-ui';
-    import {
         headers,
         applyChannelapi
     } from '@/service/getDate.js';
@@ -194,7 +190,7 @@
                 this.$parent.$parent.$parent.$parent.shopCar(obj);
             },
             addChannel() {
-                MessageBox.confirm('确定加入渠道?').then(action => {
+                this.$messageBox.confirm('确定加入渠道?').then(action => {
                     applyChannelapi(this, {
                         spuCode: this.special.spu_code,
                         sellerCode: this.special.seller_code
@@ -202,14 +198,14 @@
                         if (action.body.statusCode == 0) {
                             this.special.statusDesc = '-4';
                         }
-                        Toast({
+                        this.$toast({
                             message: action.body.message,
                             position: 'bottom',
                             duration: 2000
                         });
                     }, error => {
                         console.log(error)
-                        Toast({
+                        this.$toast({
                             message: error,
                             position: 'bottom',
                             duration: 2000

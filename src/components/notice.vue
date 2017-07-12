@@ -16,9 +16,6 @@
 
 <script>
     import {
-        Toast
-    } from 'mint-ui';
-    import {
         headers
     } from '@/service/getDate.js';
     export default {
@@ -42,7 +39,7 @@
                 if (this.pattern.test(this.vphone)) {
                     this.ajax();
                 } else {
-                    Toast({
+                    this.$toast({
                         message: "手机号码有误， 请重新输入！",
                         position: 'bottom',
                         duration: 2000
@@ -58,14 +55,14 @@
                     emulateJSON:true
                 }).then(action => {
                     this.close();
-                    Toast({
+                    this.$toast({
                         message: action.body.message,
                         position: 'bottom',
                         duration: 2000
                     });
                 }, error => {
                     this.close();
-                    Toast({
+                    this.$toast({
                         message: error.body.message,
                         position: 'bottom',
                         duration: 2000

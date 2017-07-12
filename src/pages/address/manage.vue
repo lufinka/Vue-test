@@ -33,7 +33,6 @@
 </template>
 
 <script>
-import { CellSwipe, Toast } from 'mint-ui';
 import {
     mapGetters,
     mapActions
@@ -63,13 +62,13 @@ export default {
                         if(response.body.data.message == "删除成功"){
                             this.deleteAddress(this.index);
                         }
-                        Toast({
+                        this.$toast({
                             message: response.body.data.message,
                             position: 'bottom',
                             duration: 2000
                         });
                     }, (error) => {
-                        Toast({
+                        this.$toast({
                             message: error,
                             position: 'bottom',
                             duration: 2000

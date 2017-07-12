@@ -92,10 +92,6 @@
 
 <script>
     import {
-        Toast,
-        Indicator
-    } from 'mint-ui';
-    import {
         mapActions
     } from 'vuex';
     import {
@@ -118,7 +114,7 @@
         },
         created() {
             this.changeFocus(3);
-            Indicator.open();
+            this.$indicator.open();
             this.nick = getLocalStorage('username');
             this.token = getLocalStorage('token');
             this.enterpriseName = getLocalStorage('enterpriseName');
@@ -133,14 +129,14 @@
         methods: {
             getUserInfo() {
                 getUserTipInfo(this).then((response) => {
-                    Indicator.close();
+                    this.$indicator.close();
                     this.ready = !0;
                     var data = response.body.data;
                     this.info = data;
                 }, (error) => {
                     this.ready = !0;
-                    Indicator.close();
-                    Toast({
+                    this.$indicator.close();
+                    this.$toast({
                         message: error,
                         position: 'bottom',
                         duration: 2000

@@ -347,13 +347,6 @@
         mapActions
     } from 'vuex';
     import {
-        Toast,
-        TabContainer,
-        MessageBox,
-        Indicator,
-        TabContainerItem,
-    } from 'mint-ui';
-    import {
         cartAccount,
         applyChannelapi,
         getProductDetail
@@ -384,7 +377,7 @@
             'shopCarNum' //购物车数量
         ]),
         created() {
-            Indicator.open();
+            this.$indicator.open();
             this.getDetail(this.$route.params.productId, this.$route.params.enterpriseId);
             this.getNum();
         },
@@ -423,7 +416,7 @@
                     enterpriseId: enterpriseId
                 }).then((response) => {
                     this.ready = !0;
-                    Indicator.close();
+                    this.$indicator.close();
                     var data = response.body.data;
                     this.info = data;
                     //console.log(response.body)
@@ -432,8 +425,8 @@
                     }
                 }, (error) => {
                     this.ready = !0;
-                    Indicator.close();
-                    Toast({
+                    this.$indicator.close();
+                    this.$toast({
                         message: error,
                         position: 'bottom',
                         duration: 2000
@@ -441,7 +434,7 @@
                 });
             },
             addChannel: function() {
-                MessageBox.confirm('确定加入渠道?').then(action => {
+                this.$messageBox.confirm('确定加入渠道?').then(action => {
                     applyChannelapi(this, {
                         spuCode: this.info.productId,
                         sellerCode: this.info.vendorId
@@ -449,14 +442,14 @@
                         if (action.body.statusCode == 0) {
                             this.special.statusDesc = '-4';
                         }
-                        Toast({
+                        this.$toast({
                             message: action.body.message,
                             position: 'bottom',
                             duration: 2000
                         });
                     }, error => {
                         console.log(error)
-                        Toast({
+                        this.$toast({
                             message: error,
                             position: 'bottom',
                             duration: 2000

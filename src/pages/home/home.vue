@@ -17,11 +17,6 @@
 
 <script>
     import {
-        Toast,
-        TabContainer,
-        TabContainerItem
-    } from 'mint-ui';
-    import {
         mapActions
     } from 'vuex';
     import {
@@ -61,7 +56,7 @@
                 listIndexFloorNew(this).then((response) => {
                     this.slideData = response.body.data.bannerList;
                 }, (error) => {
-                    Toast({
+                    this.$toast({
                         message: error,
                         position: 'bottom',
                         duration: 2000
@@ -72,7 +67,7 @@
                 mainH5Province(this).then((response) => {
                     this.province = response.body.data;
                 }, (error) => {
-                    Toast({
+                    this.$toast({
                         message: error,
                         position: 'bottom',
                         duration: 2000

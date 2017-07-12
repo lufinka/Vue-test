@@ -38,13 +38,6 @@
 
 <script>
     import {
-        Toast,
-        Loadmore,
-        TabContainer,
-        TabContainerItem,
-        Indicator
-    } from 'mint-ui';
-    import {
         queryDrugByPageForAll
     } from '@/service/getDate';
     import testProduct from '@/components/testProduct';
@@ -126,14 +119,14 @@
                 this.$refs.addscar.ishow = !0;
             },
             getData(num) {
-                Indicator.open();
+                this.$indicator.open();
                 queryDrugByPageForAll(this, {
                     siteCode: '000000',
                     promotionType: this.promotionType,
                     pageIndex: this.pageNow[num],
                     pageSize: 5
                 }).then((response) => {
-                    Indicator.close();
+                    this.$indicator.close();
                     if (response.body.data && response.body.data.dataList.length) {
                         this.loading = !1;
                         this.limmit[num] = response.body.data.total;
@@ -153,16 +146,16 @@
                         }
                     }else{
                         this.empty[num] = !0;
-                        Toast({
+                        this.$toast({
                         message: response.body.message,
                         position: 'bottom',
                         duration: 2000
                     });
                     }
                 }, (error) => {
-                    Indicator.close();
+                    this.$indicator.close();
                     this.loading = !1;
-                    Toast({
+                    this.$toast({
                         message: error.message,
                         position: 'bottom',
                         duration: 2000

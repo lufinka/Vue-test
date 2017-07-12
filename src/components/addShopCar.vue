@@ -35,9 +35,6 @@
         mapActions
     } from 'vuex';
     import {
-        Toast
-    } from 'mint-ui';
-    import {
         headers,
         cartAccount
     } from '@/service/getDate';
@@ -106,7 +103,7 @@
                 }, {
                     headers: headers
                 }).then(action => {
-                    Toast({
+                    this.$toast({
                         message: action.body.message,
                         position: 'bottom',
                         duration: 2000
@@ -116,7 +113,7 @@
                         this.close();
                     }
                 }, error => {
-                    Toast({
+                    this.$toast({
                         message: error.body.message,
                         position: 'bottom',
                         duration: 2000

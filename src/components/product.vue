@@ -63,7 +63,7 @@
 
 <script>
     import {
-        Toast,
+        
         MessageBox
     } from 'mint-ui';
     import {
@@ -91,14 +91,14 @@
                     }, {
                         headers: headers
                     }).then(action => {
-                        Toast({
+                        this.$toast({
                             message: action.body.message,
                             position: 'bottom',
                             duration: 2000
                         });
                     }, error => {
                         console.log(error)
-                        Toast({
+                        this.$toast({
                             message: error,
                             position: 'bottom',
                             duration: 2000

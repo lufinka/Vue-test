@@ -7,11 +7,6 @@
 </template>
 
 <script>
-    import {
-        Toast,
-        Swipe,
-        SwipeItem
-    } from 'mint-ui';
     export default {
         props: {
             slideData: {

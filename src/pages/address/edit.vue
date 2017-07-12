@@ -62,7 +62,6 @@
 </template>
 
 <script>
-import { Switch, Picker, Toast } from 'mint-ui';
 import {
     mapGetters,
     mapActions
@@ -164,13 +163,13 @@ export default {
                 headers: headers
             }).then((response) => {
                 console.log(response)
-                Toast({
+                this.$toast({
                     message: response.body.data.message,
                     position: 'bottom',
                     duration: 2000
                 });
             }, (error) => {
-                Toast({
+                this.$toast({
                     message: error,
                     position: 'bottom',
                     duration: 2000
@@ -187,19 +186,19 @@ export default {
             //Change
             if (this.index > -1 && this.index < 999) {
                 if (self.address[this.index].receiverName == '') {
-                    this.$toast({
+                    this.$this.$toast({
                         message: '收货人不能为空',
                         position: 'bottom',
                         duration: 1000
                     });
                 } else if (self.address[this.index].contactPhone == "" || !(/^(0|86|17951)?(13[0-9]|15[012356789]|18[0-9]|14[57]|17[678])[0-9]{8}$/.test(self.address[this.index].contactPhone))) {
-                    this.$toast({
+                    this.$this.$toast({
                         message: '请输入正确的手机号码',
                         position: 'bottom',
                         duration: 1000
                     });
                 } else if (self.address[this.index].address == "") {
-                    this.$toast({
+                    this.$this.$toast({
                         message: '详细地址不能为空',
                         position: 'bottom',
                         duration: 1000
@@ -210,13 +209,13 @@ export default {
                         headers: headers
                     }).then((response) => {
                         console.log(response)
-                        Toast({
+                        this.$toast({
                             message: response.body.data.message,
                             position: 'bottom',
                             duration: 2000
                         });
                     }, (error) => {
-                        Toast({
+                        this.$toast({
                             message: error,
                             position: 'bottom',
                             duration: 2000
@@ -230,19 +229,19 @@ export default {
                 //Add One
             } else {
                 if (self.vreceiverName == '') {
-                    this.$toast({
+                    this.$this.$toast({
                         message: '收货人不能为空',
                         position: 'bottom',
                         duration: 1000
                     });
                 } else if (self.vcontactPhone == ""  || !(/^(0|86|17951)?(13[0-9]|15[012356789]|18[0-9]|14[57]|17[678])[0-9]{8}$/.test(self.vcontactPhone))) {
-                    this.$toast({
+                    this.$this.$toast({
                         message: '请输入正确的手机号码',
                         position: 'bottom',
                         duration: 1000
                     });
                 } else if (self.vtaddress == "") {
-                    this.$toast({
+                    this.$this.$toast({
                         message: '详细地址不能为空',
                         position: 'bottom',
                         duration: 1000
@@ -253,13 +252,13 @@ export default {
                         headers: headers
                     }).then((response) => {
                         console.log(response)
-                        Toast({
+                        this.$toast({
                             message: response.body.data.message,
                             position: 'bottom',
                             duration: 2000
                         });
                     }, (error) => {
-                        Toast({
+                        this.$toast({
                             message: error,
                             position: 'bottom',
                             duration: 2000

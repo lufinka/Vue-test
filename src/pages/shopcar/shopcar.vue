@@ -187,11 +187,6 @@
 
 <script>
     import {
-        Toast,
-        Indicator,
-        MessageBox
-    } from 'mint-ui';
-    import {
         mapActions
     } from 'vuex';
     import footer from '@/components/footer';
@@ -273,7 +268,7 @@
         },
         created() {
             this.changeFocus(2);
-            Indicator.open();
+            this.$indicator.open();
             this.getDate();
         },
         components: {
@@ -356,7 +351,7 @@
                     }
                 };
                 console.log(deal)
-                MessageBox.confirm('确定要删除商品吗?').then(action => {
+                this.$messageBox.confirm('确定要删除商品吗?').then(action => {
                     this.$http.post('/order/api/cart/deleteShopCarts', data, {
                         headers: headers
                     }).then(action => {
@@ -368,13 +363,13 @@
                             }
                         }
                         deal = [];
-                        Toast({
+                        this.$toast({
                             message: action.body.message,
                             position: 'bottom',
                             duration: 2000
                         });
                     }, error => {
-                        Toast({
+                        this.$toast({
                             message: error,
                             position: 'bottom',
                             duration: 2000
@@ -391,7 +386,7 @@
             },
             getDate() {
                 getShopCartList(this).then((response) => {
-                    Indicator.close();
+                    this.$indicator.close();
                     var that = this;
                     this.ready = !0;
                     var data = response.body.data;
@@ -417,8 +412,8 @@
                     }
                 }, (error) => {
                     this.ready = !0;
-                    Indicator.close();
-                    Toast({
+                    this.$indicator.close();
+                    this.$toast({
                         message: error,
                         position: 'bottom',
                         duration: 2000

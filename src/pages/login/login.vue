@@ -36,9 +36,6 @@ import {
 import {
     setLocalStorage
 } from '@/service/tool.js'
-import {
-    Toast
-} from 'mint-ui';
 export default {
     name: 'hello',
     data() {
@@ -94,7 +91,7 @@ export default {
                             username: this.usernameVal,
                             password: this.passwordVal
                         });
-                        Toast({
+                        this.$toast({
                             message: '登录成功',
                             position: 'bottom',
                             duration: 2000
@@ -103,7 +100,7 @@ export default {
                             self.$router.push('home')
                         }, 1000)
                     } else {
-                        Toast({
+                        this.$toast({
                             message: data.remark,
                             position: 'bottom',
                             duration: 2000

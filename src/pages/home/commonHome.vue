@@ -72,12 +72,6 @@
 
 <script>
     import {
-        Toast,
-        TabContainer,
-        Indicator,
-        TabContainerItem
-    } from 'mint-ui';
-    import {
         listIndexFloor,
         listIndexFloorNew,
         listRecommendShop,
@@ -123,9 +117,9 @@
                 this.$refs.addscar.ishow = !0;
             },
             firstScreen() {
-                Indicator.open();
+                this.$indicator.open();
                 listIndexFloorNew(this).then((response) => {
-                    Indicator.close();
+                    this.$indicator.close();
                     var data = response.body.data;
                     if(data.fastList && data.fastList.length){
                     this.menu = data.fastList;
@@ -134,8 +128,8 @@
                     this.special = data.floorProduct[0];
                     }
                 }, (error) => {
-                    Indicator.close();
-                    Toast({
+                    this.$indicator.close();
+                    this.$toast({
                         message: error,
                         position: 'bottom',
                         duration: 2000
@@ -151,7 +145,7 @@
                     this.add = data;
                     }
                 }, (error) => {
-                    Toast({
+                    this.$toast({
                         message: error,
                         position: 'bottom',
                         duration: 2000
@@ -169,7 +163,7 @@
                     this.shopList = data.shopList;
                     }
                 }, (error) => {
-                    Toast({
+                    this.$toast({
                         message: error,
                         position: 'bottom',
                         duration: 2000
@@ -187,7 +181,7 @@
                     this.shopList = data.floors;
                     }
                 }, (error) => {
-                    Toast({
+                    this.$toast({
                         message: error,
                         position: 'bottom',
                         duration: 2000

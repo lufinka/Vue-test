@@ -49,10 +49,6 @@
 
 <script>
     import {
-        Toast,
-        Indicator
-    } from 'mint-ui';
-    import {
         mapActions
     } from 'vuex';
     import footer from '@/components/footer';
@@ -70,7 +66,7 @@
         },
         created() {
             this.changeFocus(1);
-            Indicator.open();
+            this.$indicator.open();
             this.getcategory();
         },
         components: {
@@ -83,14 +79,14 @@
             },
             getcategory() {
                 listCategory(this).then((response) => {
-                    Indicator.close();
+                    this.$indicator.close();
                     this.ready = !0;
                     var data = response.body.data;
                     this.category = data.category;
                 }, (error) => {
                     this.ready = !0;
-                    Indicator.close();
-                    Toast({
+                    this.$indicator.close();
+                    this.$toast({
                         message: error,
                         position: 'bottom',
                         duration: 2000

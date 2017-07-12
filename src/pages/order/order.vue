@@ -41,13 +41,6 @@
 <script>
     import header from '@/components/header';
     import {
-        Toast,
-        Loadmore,
-        TabContainer,
-        TabContainerItem,
-        Indicator
-    } from "mint-ui";
-    import {
         headers
     } from '@/service/getDate';
     export default {
@@ -117,7 +110,7 @@
                             this.allOrderList[num].push(reponse.body.data.orderList[i]);
                         }
                     } else {
-                        Toast({
+                        this.$toast({
                             message: response.body.message,
                             position: 'center',
                             duration: 2000

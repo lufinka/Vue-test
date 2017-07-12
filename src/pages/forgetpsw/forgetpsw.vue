@@ -16,9 +16,6 @@
 import router from '@/router'
 import header from '@/components/header';
 import {
-    Toast
-} from 'mint-ui';
-import {
     headers
 } from '@/service/getDate.js'
 export default {

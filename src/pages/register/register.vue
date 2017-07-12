@@ -36,9 +36,6 @@
     import router from '@/router'
     import header from '@/components/header';
     import {
-        Toast
-    } from 'mint-ui';
-    import {
         headers
     } from '@/service/getDate.js'
     export default {
@@ -126,7 +123,7 @@
                             console.log(response)
                         });
                     } else {
-                        Toast({
+                        this.$toast({
                             message: '请先输入图形验证码',
                             position: 'bottom',
                             duration: 2000
@@ -205,7 +202,7 @@
     }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
     @size : 37.5rem;
     @body_bgcolor: #f7f7f7;
     .font-size(@s) {
