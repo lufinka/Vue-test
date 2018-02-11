@@ -337,7 +337,6 @@
             },
             settle() {},
             deleteDate() {
-                var slef = this;
                 var deal = [];
                 var data = {
                     shoppingCartIdList: []
@@ -350,8 +349,7 @@
                         }
                     }
                 };
-                console.log(deal)
-                this.$messageBox.confirm('确定要删除商品吗?').then(action => {
+                this.$messagebox.confirm('确定要删除商品吗?').then(action => {
                     this.$http.post('/order/api/cart/deleteShopCarts', data, {
                         headers: headers
                     }).then(action => {
