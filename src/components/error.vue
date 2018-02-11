@@ -209,6 +209,7 @@
         -webkit-transform: rotateY(-40deg);
         -ms-transform: rotateY(-40deg);
         transform: rotateY(-40deg);
+        
     }
     /* Right */
     

@@ -63,10 +63,6 @@
 
 <script>
     import {
-        
-        MessageBox
-    } from 'mint-ui';
-    import {
         headers
     } from '@/service/getDate.js';
     export default {
@@ -84,7 +80,7 @@
                 this.$parent.shopCar(this.special);
             },
             addChannel: function() {
-                MessageBox.confirm('确定加入渠道?').then(action => {
+                this.$messageBox.confirm('确定加入渠道?').then(action => {
                     this.$http.post('mall/api/applyChannelapi', {
                         spuCode: this.special.spuCode,
                         sellerCode: this.special.vendorId
